@@ -1,0 +1,10 @@
+C:\Users\Ray\Downloads\ParentChild\Child\bin\Debug\Child.dll
+C:\Users\Ray\Downloads\ParentChild\Child\bin\Debug\Child.pdb
+C:\Users\Ray\Downloads\ParentChild\Child\bin\Debug\Parent.dll
+C:\Users\Ray\Downloads\ParentChild\Child\bin\Debug\WealthLab.dll
+C:\Users\Ray\Downloads\ParentChild\Child\bin\Debug\Fidelity.Components.dll
+C:\Users\Ray\Downloads\ParentChild\Child\bin\Debug\log4net.dll
+C:\Users\Ray\Downloads\ParentChild\Child\bin\Debug\Parent.pdb
+C:\Users\Ray\Downloads\ParentChild\Child\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ray\Downloads\ParentChild\Child\obj\Debug\Child.dll
+C:\Users\Ray\Downloads\ParentChild\Child\obj\Debug\Child.pdb
