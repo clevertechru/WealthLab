@@ -64,7 +64,75 @@ namespace OpeningAnAdapterAndCapturingThePackets
         // Callback function invoked by Pcap.Net for every incoming packet
         private static void PacketHandler(Packet packet)
         {
-            Console.WriteLine(packet.Timestamp.ToString("yyyy-MM-dd hh:mm:ss.fff") + " length:" + packet.Length);
+            //Console.WriteLine(packet.Timestamp.ToString("yyyy-MM-dd hh:mm:ss.fff") + " length:" + packet.Length);
+            String rayBrand = "EXFD2 ";
+            String rayPeriod = "..";
+            String rayPack = packet.ToString();
+            int rayBegin = rayPack.IndexOf(rayBrand);
+            if (rayBegin > 0) //while
+            {
+                int rayEnd = rayPack.IndexOf(rayPeriod,rayBegin);
+                String mainPack = rayPack.TrimStart().Substring(rayBegin + rayBrand.Length, rayEnd);
+                int mainIndex = mainPack.IndexOf('.');
+                Console.WriteLine("Time:" + mainPack.TrimStart().Substring(0,mainIndex));
+                mainIndex = mainPack.IndexOf(' ', mainIndex) + 1;
+                int dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("Strike Price: ", mainPack.TrimStart().Substring(mainIndex, dot2));
+                mainIndex = mainPack.IndexOf(' ', dot2) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                String temp = mainPack.TrimStart().Substring(mainIndex, dot2);
+                mainIndex = mainPack.IndexOf('.', dot2) + 1;
+                dot2 = mainPack.IndexOf('%', mainIndex) + 1;
+                String now = mainPack.TrimStart().Substring(mainIndex, dot2);
+                if(now.StartsWith("-"))
+                {
+                    temp = temp.Insert(0, "-");
+                }
+                Console.WriteLine("Differential/Basis: ", temp);
+                Console.WriteLine("Range: ", now);
+                mainIndex = mainPack.IndexOf(' ', dot2) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("At the open? ", mainPack.TrimStart().Substring(mainIndex, dot2));
+                mainIndex = mainPack.IndexOf('.', dot2) + 2;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("At the close? ", mainPack.TrimStart().Substring(mainIndex, dot2));
+                mainIndex = mainPack.IndexOf('.', dot2) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex);
+                Console.WriteLine("Volume: ", mainPack.TrimStart().Substring(mainIndex, dot2));
+                mainIndex = mainPack.IndexOf(' ', dot2 + 3 ) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("Opening Price: ", mainPack.TrimStart().Substring(mainIndex, dot2));
+                mainIndex = mainPack.IndexOf(' ', dot2) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("Highest Price? ", mainPack.TrimStart().Substring(mainIndex, dot2));
+                mainIndex = mainPack.IndexOf(' ', dot2) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("Lowest Price? ", mainPack.TrimStart().Substring(mainIndex, dot2));
+
+                mainIndex = mainPack.IndexOf('.', dot2) + 1;
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("Theory Price? ", mainPack.TrimStart().Substring(mainIndex, dot2));
+
+                mainIndex = mainPack.IndexOf('%', dot2) + 1;
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("Real Basis? ", mainPack.TrimStart().Substring(mainIndex, dot2));
+
+                mainIndex = mainPack.IndexOf('.', mainIndex) + 1;
+                dot2 = mainPack.IndexOf('.', mainIndex) + 3;
+                Console.WriteLine("Theory Basis? ", mainPack.TrimStart().Substring(mainIndex, dot2));
+                
+                rayBegin = rayPack.IndexOf(rayBrand, rayEnd + rayPeriod.Length);
+            }
         }
     }
 }
