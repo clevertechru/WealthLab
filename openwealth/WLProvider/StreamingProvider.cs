@@ -61,10 +61,10 @@ namespace OpenWealth.WLProvider
             q.Size = random.Next(50);
             q.Symbol = symbol;
 
-            //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
+            //Hearbeat(q.TimeStamp); // Why do we need this method?
 
-            UpdateMiniBar(q, q.Open, q.Open + 10, q.Open - 10); 
-            //UpdateQuote(q); // не устанавливает 
+            UpdateMiniBar(q, q.Open, q.Open + 10, q.Open - 10);
+            //UpdateQuote(q); // does not establish
         }
 
 
@@ -79,7 +79,7 @@ namespace OpenWealth.WLProvider
 
         #endregion Descriptive
 
-/* в FidelityStreamingProvider не реализованно
+        /* в FidelityStreamingProvider not implemented
 
         public IConnectionStatus ConnectionStatus { get; }
         public IDataHost DataHost { get; }
@@ -93,11 +93,11 @@ namespace OpenWealth.WLProvider
         public void Subscribe(string symbol, IStreamingUpdate streamingUpdate);
         public void UnSubscribe(string symbol, IStreamingUpdate streamingUpdate);
 
-        #region реализация интерфейса IStreamingUpdate
+        #region interface implementation IStreamingUpdate
         public void Hearbeat(DateTime timeStamp);
         public void UpdateMiniBar(Quote q, double open, double high, double low);
         public void UpdateQuote(Quote q);
-        #endregion реализация интерфейса IStreamingUpdate
- */ 
+        #endregion interface implementation IStreamingUpdate
+ */
     }
 }

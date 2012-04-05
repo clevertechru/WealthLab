@@ -92,8 +92,8 @@ namespace OpenWealth.WLProvider
             }
         }
 
-        // Должен вернуть True, если данный scale поддерживается
-        // Вызывается, когда меняешь таймфрэйм через интерфейс у существующего символа
+        // Should return True, if the scale is supported
+        // Called when a change taymfreym interface with the existing character
         public override bool SupportsDynamicUpdate(BarScale scale)
         {
             return true;
@@ -154,7 +154,7 @@ namespace OpenWealth.WLProvider
 
             ds.DSString = Page.Symbols();
 
-            // TODO Другие таймфрэймы
+            // TODO other taymfreymy
             ds.Scale = BarScale.Daily;
             ds.BarInterval = 0;            
 

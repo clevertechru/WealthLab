@@ -17,7 +17,7 @@ namespace OpenWealth.WLProvider
         public void Initialize(string dataPath)
         {
             // Clear entered symbols
-            txtSymbols.Clear(); //TODO Загрузка настроек
+            txtSymbols.Clear(); //TODO Download settings
         }
 
         public string Symbols() { return txtSymbols.Text; }

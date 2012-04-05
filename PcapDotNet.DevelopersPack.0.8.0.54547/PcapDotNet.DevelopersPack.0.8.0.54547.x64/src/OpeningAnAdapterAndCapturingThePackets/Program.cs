@@ -101,7 +101,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
 
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                Console.WriteLine("Offer: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine("Ask: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
 
                 leftIndex = rightIndex + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
@@ -118,7 +118,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
                 Console.WriteLine("Floor Price: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
-
+                /*
                 leftIndex = rayPack.IndexOf('\t', rightIndex + 1) + 1;
                 leftIndex = rayPack.IndexOf('\t', leftIndex) + 1;
                 leftIndex = rayPack.IndexOf('\t', leftIndex) + 1;
@@ -137,7 +137,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 leftIndex = rightIndex + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
                 Console.WriteLine("Theory Basis? " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
-                
+                */
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }

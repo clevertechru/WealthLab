@@ -39,7 +39,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Символы";
+            this.label1.Text = "Symbols";
             // 
             // txtSymbols
             // 
