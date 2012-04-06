@@ -155,7 +155,7 @@ namespace OpenWealth.WLProvider
             ds.DSString = Page.Symbols();
 
             // TODO other taymfreymy
-            ds.Scale = BarScale.Daily;
+            ds.Scale = BarScale.Tick;
             ds.BarInterval = 0;            
 
             return ds;

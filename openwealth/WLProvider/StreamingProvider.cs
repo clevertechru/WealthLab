@@ -11,6 +11,7 @@ namespace OpenWealth.WLProvider
     {
         System.Windows.Forms.Timer t;
         string symbol = string.Empty;
+        private StaticProvider rayProvider;
 
         public StreamingProvider()
         {
@@ -29,7 +30,8 @@ namespace OpenWealth.WLProvider
         }
         public override StaticDataProvider GetStaticProvider()
         {
-            return new StaticProvider();
+            rayProvider = new StaticProvider();
+            return rayProvider;
         }
 
         protected override void Subscribe(string symbol)
@@ -64,6 +66,7 @@ namespace OpenWealth.WLProvider
             //Hearbeat(q.TimeStamp); // Why do we need this method?
 
             UpdateMiniBar(q, q.Open, q.Open + 10, q.Open - 10);
+            
             //UpdateQuote(q); // does not establish
         }
 
