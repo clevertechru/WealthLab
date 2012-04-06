@@ -15,7 +15,7 @@ namespace OpenWealth.WLProvider
         /// <summary>
         /// Class level variables
         /// </summary>
-        
+
         Zaglushka zaglushka;
 
         private bool _cancelUpdate;
@@ -25,7 +25,7 @@ namespace OpenWealth.WLProvider
 
         /// Wizard pages
         private WizardPage Page;
-                
+
         public override void Initialize(IDataHost dataHost)
         {
             base.Initialize(dataHost);
@@ -92,8 +92,8 @@ namespace OpenWealth.WLProvider
             }
         }
 
-        // Should return True, if the scale is supported
-        // Called when a change taymfreym interface with the existing character
+        // Должен вернуть True, если данный scale поддерживается
+        // Вызывается, когда меняешь таймфрэйм через интерфейс у существующего символа
         public override bool SupportsDynamicUpdate(BarScale scale)
         {
             return true;
@@ -154,9 +154,9 @@ namespace OpenWealth.WLProvider
 
             ds.DSString = Page.Symbols();
 
-            // TODO other taymfreymy
-            ds.Scale = BarScale.Tick;
-            ds.BarInterval = 0;            
+            // TODO Другие таймфрэймы
+            ds.Scale = BarScale.Daily;
+            ds.BarInterval = 0;
 
             return ds;
         }
@@ -184,7 +184,7 @@ namespace OpenWealth.WLProvider
             symbolList.AddText(ds.DSString);
             symbols.AddRange(symbolList.Items);
         }
-        
+
         public override Bars RequestData(DataSource ds, string symbol, DateTime startDate, DateTime endDate, int maxBars, bool includePartialBar)
         {
             Bars bars = new Bars(symbol.Trim(new char[] { ' ', '"' }), ds.Scale, ds.BarInterval);
@@ -329,7 +329,7 @@ namespace OpenWealth.WLProvider
                                 bars2.SecurityName = zaglushka.GetCompanyName(s);
 
                             // After some trial and error, I figured out that setting the starting date to 1/1/1971 allows to fetch all available data
-                            barsNew = zaglushka.RequestData(ds, s, DateTime.MinValue , DateTime.Now, int.MaxValue, true);
+                            barsNew = zaglushka.RequestData(ds, s, DateTime.MinValue, DateTime.Now, int.MaxValue, true);
                             dataUpdateMsg.DisplayUpdateMessage("Symbol: " + s + ", existing bars : " + bars2.Count + ", new bars: " + barsNew.Count);
                             this.LoadAndUpdateBars(ref bars2, barsNew);
                         }
@@ -442,7 +442,7 @@ namespace OpenWealth.WLProvider
         #endregion Implementing StaticDataProvider
 
         #region Helper methods
-      
+
         private bool UpdateRequired(DataSource ds, string symbol)
         {
             bool result = false;
@@ -457,14 +457,14 @@ namespace OpenWealth.WLProvider
 
             return result;
         }
-        
-        private void LoadAndUpdateBars(ref Bars bars, Bars barsUpdate)
+
+        public void LoadAndUpdateBars(ref Bars bars, Bars barsUpdate)
         {
             this._dataStore.LoadBarsObject(bars);
             bars.Append(barsUpdate);
             this._dataStore.SaveBarsObject(bars);
         }
-        
+
         #endregion Helper methods
 
     }

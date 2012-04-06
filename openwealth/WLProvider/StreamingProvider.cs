@@ -11,12 +11,14 @@ namespace OpenWealth.WLProvider
     {
         System.Windows.Forms.Timer t;
         string symbol = string.Empty;
-        private StaticProvider rayProvider;
-
+        StaticProvider rayProvider;
+        Bars bars;
+        Bars barsNew;
+            
         public StreamingProvider()
         {
             t = new System.Windows.Forms.Timer();
-            t.Interval = 1000;
+            t.Interval = 10000;
             t.Tick += new System.EventHandler(OnTimerEvent);
         }
 
@@ -36,6 +38,8 @@ namespace OpenWealth.WLProvider
 
         protected override void Subscribe(string symbol)
         {
+            bars = new Bars(symbol, BarScale.Daily, 0);
+            barsNew = new Bars(symbol, BarScale.Tick, 0);
             this.symbol = symbol;
         }
 
@@ -54,20 +58,23 @@ namespace OpenWealth.WLProvider
 
             q.TimeStamp = DateTime.Now;
 
-            
-            q.Ask = 50*random.NextDouble()+50;
-            q.Bid = q.Ask - 50*random.NextDouble();
-            q.Open = 50*random.NextDouble()+50;
-            q.PreviousClose = 50*random.NextDouble()+50;
-            q.Price = 50*random.NextDouble()+50;
+
+            q.Ask = 50 * random.NextDouble() + 50;
+            q.Bid = q.Ask - 50 * random.NextDouble();
+            q.Open = 50 * random.NextDouble() + 50;
+            q.PreviousClose = 50 * random.NextDouble() + 50;
+            q.Price = 50 * random.NextDouble() + 50;
             q.Size = random.Next(50);
             q.Symbol = symbol;
 
-            //Hearbeat(q.TimeStamp); // Why do we need this method?
+            //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
 
-            UpdateMiniBar(q, q.Open, q.Open + 10, q.Open - 10);
+            UpdateMiniBar(q, q.Open, q.Open + 10, q.Open - 10); 
+            //UpdateQuote(q); // не устанавливает 
             
-            //UpdateQuote(q); // does not establish
+            barsNew.Add(q.TimeStamp, q.Open, q.Open + 10, q.Open - 10, q.PreviousClose, q.Size);
+            rayProvider.LoadAndUpdateBars(ref bars, barsNew);
+            
         }
 
 
@@ -82,7 +89,7 @@ namespace OpenWealth.WLProvider
 
         #endregion Descriptive
 
-        /* в FidelityStreamingProvider not implemented
+        /* в FidelityStreamingProvider не реализованно
 
         public IConnectionStatus ConnectionStatus { get; }
         public IDataHost DataHost { get; }
@@ -96,11 +103,11 @@ namespace OpenWealth.WLProvider
         public void Subscribe(string symbol, IStreamingUpdate streamingUpdate);
         public void UnSubscribe(string symbol, IStreamingUpdate streamingUpdate);
 
-        #region interface implementation IStreamingUpdate
+        #region реализация интерфейса IStreamingUpdate
         public void Hearbeat(DateTime timeStamp);
         public void UpdateMiniBar(Quote q, double open, double high, double low);
         public void UpdateQuote(Quote q);
-        #endregion interface implementation IStreamingUpdate
+        #endregion реализация интерфейса IStreamingUpdate
  */
     }
 }
