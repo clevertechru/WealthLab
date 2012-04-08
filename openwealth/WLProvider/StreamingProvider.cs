@@ -14,11 +14,11 @@ namespace OpenWealth.WLProvider
         StaticProvider rayProvider;
         Bars bars;
         Bars barsNew;
-            
+        AsynchronousClient rayClient;    
         public StreamingProvider()
         {
             t = new System.Windows.Forms.Timer();
-            t.Interval = 10000;
+            t.Interval = 3000;
             t.Tick += new System.EventHandler(OnTimerEvent);
         }
 
@@ -40,6 +40,7 @@ namespace OpenWealth.WLProvider
         {
             bars = new Bars(symbol, BarScale.Daily, 0);
             barsNew = new Bars(symbol, BarScale.Tick, 0);
+            rayClient = new AsynchronousClient();
             this.symbol = symbol;
         }
 

@@ -7,6 +7,8 @@ namespace OpeningAnAdapterAndCapturingThePackets
 {
     class Program
     {
+        static AsynchronousSocketListener rayLister;
+
         static void Main(string[] args)
         {
             // Send anonymous statistics about the usage of Pcap.Net
@@ -46,7 +48,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
 
             // Take the selected adapter
             PacketDevice selectedDevice = allDevices[deviceIndex - 1];
-
+            rayLister = new AsynchronousSocketListener();
             // Open the device
             using (PacketCommunicator communicator = 
                 selectedDevice.Open(443,                                  // portion of the packet to capture
@@ -74,11 +76,11 @@ namespace OpeningAnAdapterAndCapturingThePackets
 
                 int leftIndex = rayBegin + rayBrand.Length;
                 int rightIndex = rayPack.IndexOf('\t', leftIndex);
-                Console.WriteLine("Time: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Time:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
                 
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                Console.WriteLine("Strike Price: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Strike Price:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
                 
                 leftIndex = rayPack.IndexOf("  ", rightIndex + 1) + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
@@ -92,32 +94,32 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 {
                     temp = temp.Insert(0, "-");
                 }
-                Console.WriteLine("Differential: " + temp);
-                Console.WriteLine("Range: " + now);
+                Console.WriteLine(" Differential:" + temp);
+                Console.WriteLine(" Range:" + now);
 
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                Console.WriteLine("Bid: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Bid:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
 
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                Console.WriteLine("Ask: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Ask:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
 
                 leftIndex = rightIndex + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                Console.WriteLine("Volume: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Volume:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
 
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1 ) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                Console.WriteLine("Opening Price: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Opening Price:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
                 
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                Console.WriteLine("Ceiling Price: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Ceiling Price:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
 
                 leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                Console.WriteLine("Floor Price: " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                Console.WriteLine(" Floor Price:" + rayPack.Substring(leftIndex, rightIndex - leftIndex));
                 /*
                 leftIndex = rayPack.IndexOf('\t', rightIndex + 1) + 1;
                 leftIndex = rayPack.IndexOf('\t', leftIndex) + 1;

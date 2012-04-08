@@ -54,6 +54,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="AsynchronousClient.cs" />
     <Compile Include="WLProvider\StreamingProvider.cs" />
     <Compile Include="WLProvider\WizardPage.cs">
       <SubType>UserControl</SubType>
