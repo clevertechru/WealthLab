@@ -1,0 +1,6 @@
+C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\Strategies.ActiveTrader.Properties.Resources.resources
+C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\ResGen.read.1.tlog
+C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\ResGen.write.1.tlog
+C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\Strategies.ActiveTrader.dll
+C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\Strategies.ActiveTrader.pdb

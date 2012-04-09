@@ -1,0 +1,6 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartAction>Program</StartAction>
+    <StartProgram>c:\Program Files\MS123\Wealth-Lab Developer 5\WealthLabDev.exe</StartProgram>
+  </PropertyGroup>
+</Project>
