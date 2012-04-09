@@ -14,11 +14,14 @@ namespace OpenWealth.WLProvider
         StaticProvider rayProvider;
         Bars bars;
         Bars barsNew;
-        AsynchronousClient rayClient;    
+        AsynchronousClient rayclient;
+        double lastMinute = 0, previousClose = 0, highest = 0, lowest = 0, firstOpen = 0;
+        Quote q;
+
         public StreamingProvider()
         {
             t = new System.Windows.Forms.Timer();
-            t.Interval = 3000;
+            t.Interval = 1000;
             t.Tick += new System.EventHandler(OnTimerEvent);
         }
 
@@ -40,7 +43,8 @@ namespace OpenWealth.WLProvider
         {
             bars = new Bars(symbol, BarScale.Daily, 0);
             barsNew = new Bars(symbol, BarScale.Tick, 0);
-            rayClient = new AsynchronousClient();
+            rayclient = new AsynchronousClient(11000);
+            q = new Quote();
             this.symbol = symbol;
         }
 
@@ -54,28 +58,89 @@ namespace OpenWealth.WLProvider
         {
             if (symbol == string.Empty)
                 return;
-            Random random = new Random();
-            Quote q = new Quote();
-
-            q.TimeStamp = DateTime.Now;
-
-
-            q.Ask = 50 * random.NextDouble() + 50;
-            q.Bid = q.Ask - 50 * random.NextDouble();
-            q.Open = 50 * random.NextDouble() + 50;
-            q.PreviousClose = 50 * random.NextDouble() + 50;
-            q.Price = 50 * random.NextDouble() + 50;
-            q.Size = random.Next(50);
-            q.Symbol = symbol;
-
-            //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
-
-            UpdateMiniBar(q, q.Open, q.Open + 10, q.Open - 10); 
-            //UpdateQuote(q); // не устанавливает 
             
-            barsNew.Add(q.TimeStamp, q.Open, q.Open + 10, q.Open - 10, q.PreviousClose, q.Size);
-            rayProvider.LoadAndUpdateBars(ref bars, barsNew);
+            int leftIndex = 0, rightIndex = 0;
+            double hours = 0, minutes = 0, seconds = 0;
             
+            // Receive the response from the remote device.
+            String receivedata = rayclient.rayreceive();
+            
+            leftIndex = receivedata.IndexOf("Hour:");
+            
+            if(leftIndex > 0)
+            {
+                hours = Double.Parse(receivedata.Substring(leftIndex, 2));
+                leftIndex = receivedata.IndexOf("Minute:", leftIndex);
+                minutes = Double.Parse(receivedata.Substring(leftIndex, 2));
+
+                if (lastMinute != minutes)
+                {
+                    barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, q.Size);
+                    rayProvider.LoadAndUpdateBars(ref bars, barsNew);
+                }
+
+                leftIndex = receivedata.IndexOf("Second:", leftIndex);
+                seconds = Double.Parse(receivedata.Substring(leftIndex, 2));
+
+                q.TimeStamp = DateTime.Today;
+                q.TimeStamp.AddHours(hours);
+                q.TimeStamp.AddMinutes(minutes);
+                q.TimeStamp.AddSeconds(seconds);
+            
+                leftIndex = receivedata.IndexOf("Price:",leftIndex);
+                rightIndex = receivedata.IndexOf("#B",leftIndex);
+                String rayTemp = receivedata.Substring(leftIndex, rightIndex);
+                if (false == String.IsNullOrEmpty(rayTemp))
+                {
+                    q.Price = Double.Parse(rayTemp);
+                    q.Open = q.Price;
+                    if (lastMinute != minutes)
+                    {
+                        firstOpen = q.Open;
+                    }
+                }
+                leftIndex = rightIndex + 1;
+                    
+                leftIndex = receivedata.IndexOf("Bid:",leftIndex);
+                rightIndex = receivedata.IndexOf("$A",leftIndex);
+                rayTemp = receivedata.Substring(leftIndex, rightIndex);
+                if (false == String.IsNullOrEmpty(rayTemp))
+                {
+                    q.Bid = Double.Parse(rayTemp);
+                }
+                leftIndex = rightIndex + 1;
+            
+                leftIndex = receivedata.IndexOf("Ask:",leftIndex);
+                rightIndex = receivedata.IndexOf("%V",leftIndex);
+                rayTemp = receivedata.Substring(leftIndex, rightIndex);
+                if (false == String.IsNullOrEmpty(rayTemp))
+                {
+                    q.Ask = Double.Parse(rayTemp);
+                }
+                leftIndex = rightIndex + 1;
+
+                q.PreviousClose = previousClose;
+                q.Symbol = symbol;
+            
+                leftIndex = receivedata.IndexOf("Volume:",leftIndex);
+                rightIndex = receivedata.IndexOf("^O",leftIndex);
+                rayTemp = receivedata.Substring(leftIndex, rightIndex);
+                if (false == String.IsNullOrEmpty(rayTemp))
+                {
+                    q.Size = Double.Parse(rayTemp);
+                }
+                leftIndex = rightIndex + 1;
+            
+                previousClose = q.Open;
+                highest = Math.Max(highest, q.Price);
+                lowest = Math.Min(lowest, q.Price);
+                //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
+
+                UpdateMiniBar(q, q.Open, highest, lowest);
+                //UpdateQuote(q); // не устанавливает 
+
+                lastMinute = minutes;
+            }
         }
 
 

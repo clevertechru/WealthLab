@@ -15,20 +15,3 @@ C:\Users\Ray\Downloads\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.Develope
 C:\Users\Ray\Downloads\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\Ray\Downloads\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\obj\Debug\InterpretingThePackets.exe
 C:\Users\Ray\Downloads\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\obj\Debug\InterpretingThePackets.pdb
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\InterpretingThePackets.exe.config
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\InterpretingThePackets.exe
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\InterpretingThePackets.pdb
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Analysis.dll
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Base.dll
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Core.dll
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Packets.dll
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Analysis.xml
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Base.pdb
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Base.xml
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Core.pdb
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Core.xml
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Packets.pdb
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\bin\Debug\PcapDotNet.Packets.xml
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\obj\Debug\InterpretingThePackets.exe
-C:\Users\Ray\Documents\Visual Studio 2010\Projects\PcapDotNet.DevelopersPack.0.8.0.54547\PcapDotNet.DevelopersPack.0.8.0.54547.x64\src\InterpretingThePackets\obj\Debug\InterpretingThePackets.pdb

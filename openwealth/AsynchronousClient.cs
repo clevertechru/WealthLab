@@ -19,21 +19,37 @@ public class StateObject
 
 public class AsynchronousClient
 {
-    // The port number for the remote device.
-    private const int port = 11000;
-
+    
     // ManualResetEvent instances signal completion.
-    private ManualResetEvent connectDone =
+    private static ManualResetEvent connectDone =
         new ManualResetEvent(false);
-    private ManualResetEvent sendDone =
+    private static ManualResetEvent sendDone =
         new ManualResetEvent(false);
-    private ManualResetEvent receiveDone =
+    private static ManualResetEvent receiveDone =
         new ManualResetEvent(false);
 
     // The response from the remote device.
-    private String response = String.Empty;
+    private static String response = String.Empty;
+    Socket client;
 
-    public AsynchronousClient()
+    public void raysend()
+    {
+        // Send test data to the remote device.
+        Send(client, "This is a test<EOF>");
+        sendDone.WaitOne();
+    }
+
+    public String rayreceive()
+    {
+        // Receive the response from the remote device.
+        Receive(client);
+        receiveDone.WaitOne(100);
+        return response;
+        // Write the response to the console.
+        //Console.WriteLine("Response received : {0}", response);
+    }
+            
+    public AsynchronousClient(int port)
     {
         // Connect to a remote device.
         try
@@ -46,29 +62,18 @@ public class AsynchronousClient
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
             // Create a TCP/IP socket.
-            Socket client = new Socket(AddressFamily.InterNetwork,
+            client = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
 
             // Connect to the remote endpoint.
             client.BeginConnect(remoteEP,
                 new AsyncCallback(ConnectCallback), client);
             connectDone.WaitOne();
-
-            // Send test data to the remote device.
-            Send(client, "This is a test<EOF>");
-            sendDone.WaitOne();
-
-            // Receive the response from the remote device.
-            Receive(client);
-            receiveDone.WaitOne();
-
-            // Write the response to the console.
-            Console.WriteLine("Response received : {0}", response);
-
+            /*
             // Release the socket.
             client.Shutdown(SocketShutdown.Both);
             client.Close();
-
+            */
         }
         catch (Exception e)
         {
@@ -76,7 +81,7 @@ public class AsynchronousClient
         }
     }
 
-    private void ConnectCallback(IAsyncResult ar)
+    private static void ConnectCallback(IAsyncResult ar)
     {
         try
         {
@@ -98,7 +103,7 @@ public class AsynchronousClient
         }
     }
 
-    private void Receive(Socket client)
+    private static void Receive(Socket client)
     {
         try
         {
@@ -116,7 +121,7 @@ public class AsynchronousClient
         }
     }
 
-    private void ReceiveCallback(IAsyncResult ar)
+    private static void ReceiveCallback(IAsyncResult ar)
     {
         try
         {
@@ -154,7 +159,7 @@ public class AsynchronousClient
         }
     }
 
-    private void Send(Socket client, String data)
+    private static void Send(Socket client, String data)
     {
         // Convert the string data to byte data using ASCII encoding.
         byte[] byteData = Encoding.ASCII.GetBytes(data);
@@ -164,7 +169,7 @@ public class AsynchronousClient
             new AsyncCallback(SendCallback), client);
     }
 
-    private void SendCallback(IAsyncResult ar)
+    private static void SendCallback(IAsyncResult ar)
     {
         try
         {
@@ -184,4 +189,5 @@ public class AsynchronousClient
         }
     }
 
+    
 }
