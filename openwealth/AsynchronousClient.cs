@@ -44,7 +44,7 @@ public class AsynchronousClient
     {
         // Receive the response from the remote device.
         Receive(client);
-        receiveDone.WaitOne();
+        receiveDone.WaitOne(100);
         return response;
         // Write the response to the console.
         //Console.WriteLine("Response received : {0}", response);
