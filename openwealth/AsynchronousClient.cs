@@ -29,8 +29,9 @@ public class AsynchronousClient
         new ManualResetEvent(false);
 
     // The response from the remote device.
-    private static String response = String.Empty;
+    public static String response = String.Empty;
     Socket client;
+    private static StringBuilder rayb = new StringBuilder();
 
     public void raysend()
     {
@@ -43,12 +44,17 @@ public class AsynchronousClient
     {
         // Receive the response from the remote device.
         Receive(client);
-        receiveDone.WaitOne(100);
+        receiveDone.WaitOne();
         return response;
         // Write the response to the console.
         //Console.WriteLine("Response received : {0}", response);
     }
-            
+
+    public void rayclean()
+    {
+        response = String.Empty;
+    }
+    
     public AsynchronousClient(int port)
     {
         // Connect to a remote device.
@@ -136,11 +142,38 @@ public class AsynchronousClient
             if (bytesRead > 0)
             {
                 // There might be more data, so store the data received so far.
+                state.sb.Append(rayb.ToString());
+                rayb.Remove(0, rayb.Length);
                 state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
+                String raytemp = state.sb.ToString();
+                int rayint = raytemp.IndexOf("Hour:");
+                if (rayint >= 0)
+                {
+                    raytemp = raytemp.Substring(rayint);
+                    rayint = raytemp.LastIndexOf("^O", rayint) + "^O".Length;
+                    if (rayint >= 0)
+                    {
+                        rayb.Append(raytemp.Substring(rayint));
+                        raytemp = raytemp.Substring(0, rayint);
+                        response = raytemp;
+                        receiveDone.Set();
+                    }
+                    else
+                    {
+                        rayb.Append(raytemp);
+                        // Get the rest of the data.
+                        client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                                            new AsyncCallback(ReceiveCallback), state);
 
-                // Get the rest of the data.
-                client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReceiveCallback), state);
+                    }
+                }
+                else
+                {
+                    rayb.Append(raytemp);
+                    // Get the rest of the data.
+                    client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                                        new AsyncCallback(ReceiveCallback), state);
+                }
             }
             else
             {

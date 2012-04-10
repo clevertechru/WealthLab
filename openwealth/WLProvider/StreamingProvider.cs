@@ -15,7 +15,7 @@ namespace OpenWealth.WLProvider
         Bars bars;
         Bars barsNew;
         AsynchronousClient rayclient;
-        double lastMinute = 0, previousClose = 0, highest = 0, lowest = 0, firstOpen = 0;
+        double lastMinute = 0, previousClose = 0, highest = 0, lowest = 10000, firstOpen = 0, lastVolume = 4256;
         Quote q;
 
         public StreamingProvider()
@@ -64,32 +64,35 @@ namespace OpenWealth.WLProvider
             
             // Receive the response from the remote device.
             String receivedata = rayclient.rayreceive();
+
+            leftIndex = receivedata.IndexOf("Hour:", leftIndex);
             
-            leftIndex = receivedata.IndexOf("Hour:");
-            
-            if(leftIndex > 0)
+            while(leftIndex >= 0)
             {
+                
+                leftIndex += "Hour:".Length;
                 hours = Double.Parse(receivedata.Substring(leftIndex, 2));
-                leftIndex = receivedata.IndexOf("Minute:", leftIndex);
+                leftIndex = receivedata.IndexOf("Minute:", leftIndex) + "Minute:".Length;
                 minutes = Double.Parse(receivedata.Substring(leftIndex, 2));
 
-                if (lastMinute != minutes)
+                if (lastMinute != minutes && lastMinute > 0)
                 {
+                    UpdateMiniBar(q, q.Open, highest, lowest);
                     barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, q.Size);
                     rayProvider.LoadAndUpdateBars(ref bars, barsNew);
                 }
 
-                leftIndex = receivedata.IndexOf("Second:", leftIndex);
+                leftIndex = receivedata.IndexOf("Second:", leftIndex) + "Second:".Length;
                 seconds = Double.Parse(receivedata.Substring(leftIndex, 2));
 
                 q.TimeStamp = DateTime.Today;
-                q.TimeStamp.AddHours(hours);
-                q.TimeStamp.AddMinutes(minutes);
-                q.TimeStamp.AddSeconds(seconds);
-            
-                leftIndex = receivedata.IndexOf("Price:",leftIndex);
-                rightIndex = receivedata.IndexOf("#B",leftIndex);
-                String rayTemp = receivedata.Substring(leftIndex, rightIndex);
+                q.TimeStamp = q.TimeStamp.AddHours(hours);
+                q.TimeStamp = q.TimeStamp.AddMinutes(minutes);
+                q.TimeStamp = q.TimeStamp.AddSeconds(seconds);
+
+                leftIndex = receivedata.IndexOf("Price:", leftIndex) + "Price:".Length;
+                rightIndex = receivedata.IndexOf("#B", leftIndex);
+                String rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
                 if (false == String.IsNullOrEmpty(rayTemp))
                 {
                     q.Price = Double.Parse(rayTemp);
@@ -100,19 +103,19 @@ namespace OpenWealth.WLProvider
                     }
                 }
                 leftIndex = rightIndex + 1;
-                    
-                leftIndex = receivedata.IndexOf("Bid:",leftIndex);
-                rightIndex = receivedata.IndexOf("$A",leftIndex);
-                rayTemp = receivedata.Substring(leftIndex, rightIndex);
+
+                leftIndex = receivedata.IndexOf("Bid:", leftIndex) + "Bid:".Length;
+                rightIndex = receivedata.IndexOf("$A", leftIndex);
+                rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
                 if (false == String.IsNullOrEmpty(rayTemp))
                 {
                     q.Bid = Double.Parse(rayTemp);
                 }
                 leftIndex = rightIndex + 1;
-            
-                leftIndex = receivedata.IndexOf("Ask:",leftIndex);
-                rightIndex = receivedata.IndexOf("%V",leftIndex);
-                rayTemp = receivedata.Substring(leftIndex, rightIndex);
+
+                leftIndex = receivedata.IndexOf("Ask:", leftIndex) + "Ask:".Length;
+                rightIndex = receivedata.IndexOf("%V", leftIndex);
+                rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
                 if (false == String.IsNullOrEmpty(rayTemp))
                 {
                     q.Ask = Double.Parse(rayTemp);
@@ -121,16 +124,18 @@ namespace OpenWealth.WLProvider
 
                 q.PreviousClose = previousClose;
                 q.Symbol = symbol;
-            
-                leftIndex = receivedata.IndexOf("Volume:",leftIndex);
-                rightIndex = receivedata.IndexOf("^O",leftIndex);
-                rayTemp = receivedata.Substring(leftIndex, rightIndex);
+
+                leftIndex = receivedata.IndexOf("Volume:", leftIndex) + "Volume:".Length;
+                rightIndex = receivedata.IndexOf("^O", leftIndex);
+                rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
                 if (false == String.IsNullOrEmpty(rayTemp))
                 {
-                    q.Size = Double.Parse(rayTemp);
+                    double nowVolume = Double.Parse(rayTemp);
+                    q.Size = nowVolume - lastVolume;
+                    lastVolume = nowVolume;
                 }
                 leftIndex = rightIndex + 1;
-            
+
                 previousClose = q.Open;
                 highest = Math.Max(highest, q.Price);
                 lowest = Math.Min(lowest, q.Price);
@@ -140,7 +145,12 @@ namespace OpenWealth.WLProvider
                 //UpdateQuote(q); // не устанавливает 
 
                 lastMinute = minutes;
+
+                leftIndex = receivedata.IndexOf("Hour:", leftIndex);
+                
             }
+
+            rayclient.rayclean();
         }
 
 

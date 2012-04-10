@@ -49,7 +49,9 @@ namespace OpeningAnAdapterAndCapturingThePackets
 
             // Take the selected adapter
             PacketDevice selectedDevice = allDevices[deviceIndex - 1];
+            
             rayclient = new SynchronousSocketListener(11000);
+            
             // Send test data to the remote device.
             //rayclient.raysend("This is a test<EOF>");
             
@@ -72,7 +74,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
         private static void PacketHandler(Packet packet)
         {
             //Console.WriteLine(packet.Timestamp.ToString("yyyy-MM-dd hh:mm:ss.fff") + " length:" + packet.Length);
-            String rayBrand = "EXFD2\t";
+            String rayBrand = "TXFD2\t";
             Encoding enc8 = Encoding.ASCII;
             String rayPack = enc8.GetString(packet.Buffer);
             int rayBegin = rayPack.IndexOf(rayBrand);
@@ -85,11 +87,11 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 rayBuilder.Append("Minute:").Append(rayPack.Substring(leftIndex+2, 2));
                 rayBuilder.Append("Second:").Append(rayPack.Substring(leftIndex+4, 2));
                 
-                leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
+                leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("~Price:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                rayBuilder.Append("~Price:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
                 
-                leftIndex = rayPack.IndexOf("  ", rightIndex + 1) + 2;
+                leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
                 //String temp = rayPack.Substring(leftIndex, rightIndex - leftIndex);
 
@@ -104,29 +106,32 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 rayBuilder.Append("!Differential:").Append(temp);
                 rayBuilder.Append("@Range:").Append(now);
                 */
-                leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
+                leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("#Bid:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                rayBuilder.Append("#Bid:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
 
-                leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
+                leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                rayBuilder.Append("$Ask:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                rayBuilder.Append("$Ask:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
 
                 leftIndex = rightIndex + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("%Volume:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                rayBuilder.Append("%Volume:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
 
-                leftIndex = rayPack.IndexOf(' ', rightIndex + 1 ) + 1;
+                leftIndex = rightIndex + 1;
+                rightIndex = rayPack.IndexOf('\t', leftIndex);
+
+                leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                rayBuilder.Append("^Opening:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex));
-                
-                leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
-                rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("&Ceiling:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                rayBuilder.Append("^Opening:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
 
-                leftIndex = rayPack.IndexOf(' ', rightIndex + 1) + 1;
+                leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("*Floor:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex));
+                rayBuilder.Append("&Ceiling:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
+
+                leftIndex = rightIndex + 2;
+                rightIndex = rayPack.IndexOf('\t', leftIndex);
+                rayBuilder.Append("*Floor:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
 
                 rayBuilder.Append("(");
                 /*
@@ -152,6 +157,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 
                 // Send test data to the remote device.
                 rayclient.raysend(rayBuilder.ToString());
+                
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }
