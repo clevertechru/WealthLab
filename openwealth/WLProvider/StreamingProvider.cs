@@ -80,6 +80,7 @@ namespace OpenWealth.WLProvider
                     UpdateMiniBar(q, q.Open, highest, lowest);
                     barsNew.Add(q.TimeStamp, q.Open, highest, lowest, q.Price, minSize);
                     minSize = 0;
+                    rayProvider.LoadAndUpdateBars(ref bars, barsNew);
                 }
 
                 leftIndex = receivedata.IndexOf("Second:", leftIndex) + "Second:".Length;
@@ -137,18 +138,14 @@ namespace OpenWealth.WLProvider
                 highest = Math.Max(highest, q.Price);
                 lowest = Math.Min(lowest, q.Price);
                 //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
-                if (lastMinute == minutes)
-                {
-                    //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
-                    UpdateMiniBar(q, q.Open, highest, lowest);
-                    //UpdateQuote(q); // не устанавливает 
-                }
+                
+                //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
+                UpdateMiniBar(q, q.Open, highest, lowest);
+                //UpdateQuote(q); // не устанавливает 
+                
                 lastMinute = minutes;
-
                 leftIndex = receivedata.IndexOf("Hour:", leftIndex);
             
-                rayProvider.LoadAndUpdateBars(ref bars, barsNew);
-
             }
             
             rayclient.rayclean();
