@@ -15,13 +15,13 @@ namespace OpenWealth.WLProvider
         Bars bars;
         Bars barsNew;
         AsynchronousClient rayclient;
-        double lastMinute = 0, previousClose = 0, highest = 0, lowest = 10000, firstOpen = 0, lastVolume = 4256;
+        double lastMinute = 0, previousClose = 0, highest = 0, lowest = 10000, lastVolume = 4610, minSize = 0;
         Quote q;
 
         public StreamingProvider()
         {
             t = new System.Windows.Forms.Timer();
-            t.Interval = 1000;
+            t.Interval = 2000;
             t.Tick += new System.EventHandler(OnTimerEvent);
         }
 
@@ -42,7 +42,7 @@ namespace OpenWealth.WLProvider
         protected override void Subscribe(string symbol)
         {
             bars = new Bars(symbol, BarScale.Daily, 0);
-            barsNew = new Bars(symbol, BarScale.Tick, 0);
+            barsNew = new Bars(symbol, BarScale.Minute, 0);
             rayclient = new AsynchronousClient(11000);
             q = new Quote();
             this.symbol = symbol;
@@ -78,8 +78,8 @@ namespace OpenWealth.WLProvider
                 if (lastMinute != minutes && lastMinute > 0)
                 {
                     UpdateMiniBar(q, q.Open, highest, lowest);
-                    barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, q.Size);
-                    rayProvider.LoadAndUpdateBars(ref bars, barsNew);
+                    barsNew.Add(q.TimeStamp, q.Open, highest, lowest, q.Price, minSize);
+                    minSize = 0;
                 }
 
                 leftIndex = receivedata.IndexOf("Second:", leftIndex) + "Second:".Length;
@@ -97,10 +97,6 @@ namespace OpenWealth.WLProvider
                 {
                     q.Price = Double.Parse(rayTemp);
                     q.Open = q.Price;
-                    if (lastMinute != minutes)
-                    {
-                        firstOpen = q.Open;
-                    }
                 }
                 leftIndex = rightIndex + 1;
 
@@ -126,12 +122,13 @@ namespace OpenWealth.WLProvider
                 q.Symbol = symbol;
 
                 leftIndex = receivedata.IndexOf("Volume:", leftIndex) + "Volume:".Length;
-                rightIndex = receivedata.IndexOf("^O", leftIndex);
+                rightIndex = receivedata.IndexOf("(", leftIndex);
                 rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
                 if (false == String.IsNullOrEmpty(rayTemp))
                 {
                     double nowVolume = Double.Parse(rayTemp);
                     q.Size = nowVolume - lastVolume;
+                    minSize += q.Size;
                     lastVolume = nowVolume;
                 }
                 leftIndex = rightIndex + 1;
@@ -140,16 +137,20 @@ namespace OpenWealth.WLProvider
                 highest = Math.Max(highest, q.Price);
                 lowest = Math.Min(lowest, q.Price);
                 //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
-
-                UpdateMiniBar(q, q.Open, highest, lowest);
-                //UpdateQuote(q); // не устанавливает 
-
+                if (lastMinute == minutes)
+                {
+                    //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
+                    UpdateMiniBar(q, q.Open, highest, lowest);
+                    //UpdateQuote(q); // не устанавливает 
+                }
                 lastMinute = minutes;
 
                 leftIndex = receivedata.IndexOf("Hour:", leftIndex);
-                
-            }
+            
+                rayProvider.LoadAndUpdateBars(ref bars, barsNew);
 
+            }
+            
             rayclient.rayclean();
         }
 

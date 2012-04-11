@@ -149,12 +149,14 @@ public class AsynchronousClient
                 int rayint = raytemp.IndexOf("Hour:");
                 if (rayint >= 0)
                 {
+                    String endstr = "(";
                     raytemp = raytemp.Substring(rayint);
-                    rayint = raytemp.LastIndexOf("^O", rayint) + "^O".Length;
-                    if (rayint >= 0)
+                    int rayend = raytemp.LastIndexOf(endstr, raytemp.Length);
+                    if (rayend >= 0)
                     {
-                        rayb.Append(raytemp.Substring(rayint));
-                        raytemp = raytemp.Substring(0, rayint);
+                        rayend += endstr.Length;
+                        rayb.Append(raytemp.Substring(rayend));
+                        raytemp = raytemp.Substring(rayint, rayend - rayint);
                         response = raytemp;
                         receiveDone.Set();
                     }

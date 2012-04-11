@@ -74,53 +74,120 @@ namespace OpeningAnAdapterAndCapturingThePackets
         private static void PacketHandler(Packet packet)
         {
             //Console.WriteLine(packet.Timestamp.ToString("yyyy-MM-dd hh:mm:ss.fff") + " length:" + packet.Length);
-            String rayBrand = "TXFD2\t";
+            String rayBrand = "EXFD2\t";
             Encoding enc8 = Encoding.ASCII;
             String rayPack = enc8.GetString(packet.Buffer);
             int rayBegin = rayPack.IndexOf(rayBrand);
-            while (rayBegin > 0) //while
+            while (rayBegin >= 0) //while
             {
+                String endstr = "(";
 
                 int leftIndex = rayBegin + rayBrand.Length;
-                int rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("Hour:").Append(rayPack.Substring(leftIndex, 2));
-                rayBuilder.Append("Minute:").Append(rayPack.Substring(leftIndex+2, 2));
-                rayBuilder.Append("Second:").Append(rayPack.Substring(leftIndex+4, 2));
-                
-                leftIndex = rightIndex + 2;
-                rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("~Price:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
-                
-                leftIndex = rightIndex + 2;
-                rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                //String temp = rayPack.Substring(leftIndex, rightIndex - leftIndex);
-
-                leftIndex = rightIndex + 1;
-                rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                /*
-                String now = rayPack.Substring(leftIndex, rightIndex - leftIndex);
-                if(now.StartsWith("-"))
+                int rightIndex = 0;
+                if (leftIndex < rayPack.Length)
                 {
-                    temp = temp.Insert(0, "-");
+                    rightIndex = rayPack.IndexOf('\t', leftIndex);
+                    if (rightIndex > 0)
+                    {
+                        rayBuilder.Append("Hour:").Append(rayPack.Substring(leftIndex, 2));
+                        rayBuilder.Append("Minute:").Append(rayPack.Substring(leftIndex + 2, 2));
+                        rayBuilder.Append("Second:").Append(rayPack.Substring(leftIndex + 4, 2));
+                    }
+                    else
+                        break;
                 }
-                rayBuilder.Append("!Differential:").Append(temp);
-                rayBuilder.Append("@Range:").Append(now);
-                */
+                else
+                    break;
                 leftIndex = rightIndex + 2;
-                rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("#Bid:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
-
+                if (leftIndex < rayPack.Length)
+                {
+                    rightIndex = rayPack.IndexOf('\t', leftIndex);
+                    if (rightIndex > 0)
+                    {
+                        rayBuilder.Append("~Price:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
+                    }
+                    else
+                        break;
+                }
+                else
+                    break;
                 leftIndex = rightIndex + 2;
-                rightIndex = rayPack.IndexOf('\t', leftIndex) ;
-                rayBuilder.Append("$Ask:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
-
+                if (leftIndex < rayPack.Length)
+                {
+                    rightIndex = rayPack.IndexOf('\t', leftIndex);
+                    if (rightIndex > 0)
+                    {
+                        //String temp = rayPack.Substring(leftIndex, rightIndex - leftIndex);
+                    }
+                    else
+                        break;
+                }
+                else
+                    break;
+                leftIndex = rightIndex + 1;
+                if (leftIndex < rayPack.Length)
+                {
+                    rightIndex = rayPack.IndexOf('\t', leftIndex);
+                    if (rightIndex > 0)
+                    {
+                        /*
+                        String now = rayPack.Substring(leftIndex, rightIndex - leftIndex);
+                        if(now.StartsWith("-"))
+                        {
+                            temp = temp.Insert(0, "-");
+                        }
+                        rayBuilder.Append("!Differential:").Append(temp);
+                        rayBuilder.Append("@Range:").Append(now);
+                        */
+                    }
+                    else
+                        break;
+                }
+                else
+                    break;
+                leftIndex = rightIndex + 2;
+                if (leftIndex < rayPack.Length)
+                {
+                    rightIndex = rayPack.IndexOf('\t', leftIndex);
+                    if (rightIndex > 0)
+                    {
+                        rayBuilder.Append("#Bid:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
+                    }
+                    else
+                        break;
+                }
+                else
+                    break;
+                leftIndex = rightIndex + 2;
+                if (leftIndex < rayPack.Length)
+                {
+                    rightIndex = rayPack.IndexOf('\t', leftIndex);
+                    if (rightIndex > 0)
+                    {
+                        rayBuilder.Append("$Ask:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
+                    }
+                    else
+                        break;
+                }
+                else
+                    break;
+                leftIndex = rightIndex + 1;
+                if (leftIndex < rayPack.Length)
+                {
+                    rightIndex = rayPack.IndexOf('\t', leftIndex);
+                    if (rightIndex > 0)
+                    {
+                        rayBuilder.Append("%Volume:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
+                    }
+                    else
+                        break;
+                }
+                else
+                    break;
+                /*
                 leftIndex = rightIndex + 1;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
-                rayBuilder.Append("%Volume:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
-
-                leftIndex = rightIndex + 1;
-                rightIndex = rayPack.IndexOf('\t', leftIndex);
-
+                
                 leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex) ;
                 rayBuilder.Append("^Opening:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
@@ -132,8 +199,8 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 leftIndex = rightIndex + 2;
                 rightIndex = rayPack.IndexOf('\t', leftIndex);
                 rayBuilder.Append("*Floor:").Append(rayPack.Substring(leftIndex, rightIndex - leftIndex).TrimStart());
-
-                rayBuilder.Append("(");
+                */
+                rayBuilder.Append(endstr);
                 /*
                 leftIndex = rayPack.IndexOf('\t', rightIndex + 1) + 1;
                 leftIndex = rayPack.IndexOf('\t', leftIndex) + 1;
@@ -161,6 +228,8 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }
+
+            rayBuilder.Clear();
 
         }
     }

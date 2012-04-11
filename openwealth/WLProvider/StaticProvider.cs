@@ -455,7 +455,7 @@ namespace OpenWealth.WLProvider
             if (DateTime.Now.Date > updateTime.Date.AddDays(1))
                 result = true;
 
-            return result;
+            return true;// result;
         }
 
         public void LoadAndUpdateBars(ref Bars bars, Bars barsUpdate)
