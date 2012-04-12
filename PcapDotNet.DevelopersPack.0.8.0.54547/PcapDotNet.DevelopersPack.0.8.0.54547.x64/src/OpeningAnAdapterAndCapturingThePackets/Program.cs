@@ -9,7 +9,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
     {
         static SynchronousSocketListener rayclient;
         static StringBuilder rayBuilder;
-
+        static String lastminute = "0";
         static void Main(string[] args)
         {
             // Send anonymous statistics about the usage of Pcap.Net
@@ -90,8 +90,13 @@ namespace OpeningAnAdapterAndCapturingThePackets
                     if (rightIndex > 0)
                     {
                         rayBuilder.Append("Hour:").Append(rayPack.Substring(leftIndex, 2));
-                        rayBuilder.Append("Minute:").Append(rayPack.Substring(leftIndex + 2, 2));
-                        Console.WriteLine("Minute:{0}", rayPack.Substring(leftIndex + 2, 2));
+                        String minute = rayPack.Substring(leftIndex + 2, 2);
+                        rayBuilder.Append("Minute:").Append(minute);
+                        if (false == minute.Equals(lastminute))
+                        {
+                            Console.WriteLine("Minute:{0}", minute);
+                            lastminute = minute;
+                        }
                         rayBuilder.Append("Second:").Append(rayPack.Substring(leftIndex + 4, 2));
                     }
                     else

@@ -12,6 +12,7 @@ namespace OpenWealth.WLProvider
         System.Windows.Forms.Timer t;
         string symbol = string.Empty;
         StaticProvider rayProvider;
+        Bars bars;
         Bars barsNew;
         AsynchronousClient rayclient;
         double lastMinute = 0, previousClose = 0, highest = 0, lowest = 10000, lastVolume = 4610, minSize = 0;
@@ -40,6 +41,7 @@ namespace OpenWealth.WLProvider
 
         protected override void Subscribe(string symbol)
         {
+            bars = new Bars(symbol, BarScale.Daily, 0);
             barsNew = new Bars(symbol, BarScale.Minute, 0);
             rayclient = new AsynchronousClient(11000);
             q = new Quote();
@@ -56,18 +58,18 @@ namespace OpenWealth.WLProvider
         {
             if (symbol == string.Empty)
                 return;
-            
+
             int leftIndex = 0, rightIndex = 0;
             double hours = 0, minutes = 0, seconds = 0;
-            
+
             // Receive the response from the remote device.
             String receivedata = rayclient.rayreceive();
 
             leftIndex = receivedata.IndexOf("Hour:", leftIndex);
-            
-            while(leftIndex >= 0)
+
+            while (leftIndex >= 0)
             {
-                
+
                 leftIndex += "Hour:".Length;
                 hours = Double.Parse(receivedata.Substring(leftIndex, 2));
                 leftIndex = receivedata.IndexOf("Minute:", leftIndex) + "Minute:".Length;
@@ -78,7 +80,7 @@ namespace OpenWealth.WLProvider
                     UpdateMiniBar(q, q.Open, highest, lowest);
                     barsNew.Add(q.TimeStamp, q.Open, highest, lowest, q.Price, minSize);
                     minSize = 0;
-                    rayProvider.LoadAndUpdateBars(ref rayProvider.zaglushka.bars, barsNew);
+                    rayProvider.LoadAndUpdateBars(ref bars, barsNew);
                 }
 
                 leftIndex = receivedata.IndexOf("Second:", leftIndex) + "Second:".Length;
@@ -136,16 +138,16 @@ namespace OpenWealth.WLProvider
                 highest = Math.Max(highest, q.Price);
                 lowest = Math.Min(lowest, q.Price);
                 //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
-                
+
                 //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
                 UpdateMiniBar(q, q.Open, highest, lowest);
                 //UpdateQuote(q); // не устанавливает 
-                
+
                 lastMinute = minutes;
                 leftIndex = receivedata.IndexOf("Hour:", leftIndex);
-            
+
             }
-            
+
             rayclient.rayclean();
         }
 

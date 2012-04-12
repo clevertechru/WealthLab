@@ -17,7 +17,8 @@ namespace OpenWealth.WLProvider
         /// </summary>
 
         public Zaglushka zaglushka;
-
+        public int barinterval;
+        public BarScale scale;
         private bool _cancelUpdate;
         private BarDataStore _dataStore;
         private IDataUpdateMessage _dataUpdateMsg;
@@ -28,6 +29,8 @@ namespace OpenWealth.WLProvider
 
         public override void Initialize(IDataHost dataHost)
         {
+            scale = BarScale.Daily;
+            barinterval = 0;
             base.Initialize(dataHost);
             this._dataStore = new BarDataStore(dataHost, this);
             this.zaglushka = new Zaglushka();
@@ -155,8 +158,8 @@ namespace OpenWealth.WLProvider
             ds.DSString = Page.Symbols();
 
             // TODO Другие таймфрэймы
-            ds.Scale = BarScale.Daily;
-            ds.BarInterval = 0;
+            ds.Scale = scale;
+            ds.BarInterval = barinterval;
 
             return ds;
         }
@@ -188,15 +191,15 @@ namespace OpenWealth.WLProvider
         public override Bars RequestData(DataSource ds, string symbol, DateTime startDate, DateTime endDate, int maxBars, bool includePartialBar)
         {
             Bars bars = new Bars(symbol.Trim(new char[] { ' ', '"' }), ds.Scale, ds.BarInterval);
-            Bars barsNew;
-
+            
             if (this._dataStore.ContainsSymbol(symbol, ds.Scale, ds.BarInterval))
             {
+                
                 if ((base.DataHost.OnDemandUpdateEnabled || this._updating) && this.UpdateRequired(ds, symbol))
                 {
-                    DateTime lastBar = this._dataStore.SymbolLastUpdated(symbol, BarScale.Daily, 0);
+                    DateTime lastBar = this._dataStore.SymbolLastUpdated(symbol, scale, barinterval);
 
-                    barsNew = zaglushka.RequestData(ds, symbol, startDate, endDate, maxBars, includePartialBar);
+                    Bars barsNew = zaglushka.RequestData(ds, symbol, startDate, endDate, maxBars, includePartialBar);
 
                     if (barsNew != null)
                         this.LoadAndUpdateBars(ref bars, barsNew);
@@ -277,7 +280,7 @@ namespace OpenWealth.WLProvider
                         {
                             if (!this._cancelUpdate)
                             {
-                                bars1 = new Bars(s, BarScale.Daily, 0);
+                                bars1 = new Bars(s, scale, barinterval);
 
                                 if (_dataStore.ContainsSymbol(s, ds.Scale, ds.BarInterval))
                                     _dataStore.LoadBarsObject(bars1);
@@ -377,7 +380,7 @@ namespace OpenWealth.WLProvider
                 // If 'Update Non DS Symbols' is selected in DM, need to build the *complete* symbol list (incl. which have been deleted from existing DataSets)
                 List<string> allExistingSymbols = new List<string>();
                 allExistingSymbols.AddRange(allVisibleSymbols);
-                IList<string> existingSymbols = this._dataStore.GetExistingSymbols(BarScale.Daily, 0);
+                IList<string> existingSymbols = this._dataStore.GetExistingSymbols(scale, barinterval);
                 if (updateNonDSSymbols)
                 {
                     foreach (string str in existingSymbols)
@@ -387,7 +390,7 @@ namespace OpenWealth.WLProvider
 
                 // Create a virtual DataSource on-the-fly that contains the entire symbol list of the provider
                 DataSource ds_ = new DataSource(this);
-                ds_.BarDataScale = new BarDataScale(BarScale.Daily, 0);
+                ds_.BarDataScale = new BarDataScale(scale, barinterval);
                 ds_.DSString = allExistingSymbols.ToString();
 
                 // Update all by creating a virtual DataSet
@@ -405,7 +408,7 @@ namespace OpenWealth.WLProvider
                         {
                             num++;
                             // It's important to specify the right BarScale/Interval here (see note above re: multiple bar data scales)
-                            this._dataStore.RemoveFile(str, BarScale.Daily, 0);
+                            this._dataStore.RemoveFile(str, scale, barinterval);
                             if (str3 != "")
                             {
                                 str3 += ", ";
