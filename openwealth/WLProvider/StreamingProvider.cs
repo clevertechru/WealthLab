@@ -12,10 +12,8 @@ namespace OpenWealth.WLProvider
         System.Windows.Forms.Timer t;
         string symbol = string.Empty;
         StaticProvider rayProvider;
-        Bars bars;
-        Bars barsNew;
         AsynchronousClient rayclient;
-        double lastMinute = 0, previousClose = 0, highest = 0, lowest = 10000, lastVolume = 4610, minSize = 0;
+        double previousClose = 0, highest = 0, lowest = 10000, lastVolume = 4610;
         Quote q;
 
         public StreamingProvider()
@@ -41,8 +39,6 @@ namespace OpenWealth.WLProvider
 
         protected override void Subscribe(string symbol)
         {
-            bars = new Bars(symbol, BarScale.Daily, 0);
-            barsNew = new Bars(symbol, BarScale.Minute, 0);
             rayclient = new AsynchronousClient(11000);
             q = new Quote();
             this.symbol = symbol;
@@ -74,15 +70,6 @@ namespace OpenWealth.WLProvider
                 hours = Double.Parse(receivedata.Substring(leftIndex, 2));
                 leftIndex = receivedata.IndexOf("Minute:", leftIndex) + "Minute:".Length;
                 minutes = Double.Parse(receivedata.Substring(leftIndex, 2));
-
-                if (lastMinute != minutes && lastMinute > 0)
-                {
-                    UpdateMiniBar(q, q.Open, highest, lowest);
-                    barsNew.Add(q.TimeStamp, q.Open, highest, lowest, q.Price, minSize);
-                    minSize = 0;
-                    rayProvider.LoadAndUpdateBars(ref bars, barsNew);
-                }
-
                 leftIndex = receivedata.IndexOf("Second:", leftIndex) + "Second:".Length;
                 seconds = Double.Parse(receivedata.Substring(leftIndex, 2));
 
@@ -129,7 +116,6 @@ namespace OpenWealth.WLProvider
                 {
                     double nowVolume = Double.Parse(rayTemp);
                     q.Size = nowVolume - lastVolume;
-                    minSize += q.Size;
                     lastVolume = nowVolume;
                 }
                 leftIndex = rightIndex + 1;
@@ -143,7 +129,6 @@ namespace OpenWealth.WLProvider
                 UpdateMiniBar(q, q.Open, highest, lowest);
                 //UpdateQuote(q); // не устанавливает 
 
-                lastMinute = minutes;
                 leftIndex = receivedata.IndexOf("Hour:", leftIndex);
 
             }
