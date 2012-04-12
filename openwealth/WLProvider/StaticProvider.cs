@@ -16,7 +16,7 @@ namespace OpenWealth.WLProvider
         /// Class level variables
         /// </summary>
 
-        Zaglushka zaglushka;
+        public Zaglushka zaglushka;
 
         private bool _cancelUpdate;
         private BarDataStore _dataStore;

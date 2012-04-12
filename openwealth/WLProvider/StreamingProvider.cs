@@ -12,7 +12,6 @@ namespace OpenWealth.WLProvider
         System.Windows.Forms.Timer t;
         string symbol = string.Empty;
         StaticProvider rayProvider;
-        Bars bars;
         Bars barsNew;
         AsynchronousClient rayclient;
         double lastMinute = 0, previousClose = 0, highest = 0, lowest = 10000, lastVolume = 4610, minSize = 0;
@@ -41,7 +40,6 @@ namespace OpenWealth.WLProvider
 
         protected override void Subscribe(string symbol)
         {
-            bars = new Bars(symbol, BarScale.Daily, 0);
             barsNew = new Bars(symbol, BarScale.Minute, 0);
             rayclient = new AsynchronousClient(11000);
             q = new Quote();
@@ -80,7 +78,7 @@ namespace OpenWealth.WLProvider
                     UpdateMiniBar(q, q.Open, highest, lowest);
                     barsNew.Add(q.TimeStamp, q.Open, highest, lowest, q.Price, minSize);
                     minSize = 0;
-                    rayProvider.LoadAndUpdateBars(ref bars, barsNew);
+                    rayProvider.LoadAndUpdateBars(ref rayProvider.zaglushka.bars, barsNew);
                 }
 
                 leftIndex = receivedata.IndexOf("Second:", leftIndex) + "Second:".Length;

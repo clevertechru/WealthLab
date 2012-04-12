@@ -91,6 +91,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
                     {
                         rayBuilder.Append("Hour:").Append(rayPack.Substring(leftIndex, 2));
                         rayBuilder.Append("Minute:").Append(rayPack.Substring(leftIndex + 2, 2));
+                        Console.WriteLine("Minute:{0}", rayPack.Substring(leftIndex + 2, 2));
                         rayBuilder.Append("Second:").Append(rayPack.Substring(leftIndex + 4, 2));
                     }
                     else
