@@ -46,7 +46,7 @@ namespace OpenWealth.WLProvider
 
         protected override void Subscribe(string symbol)
         {
-            bars = new Bars(symbol, BarScale.Second, 60);
+            bars = new Bars(symbol, BarScale.Second, rayProvider.barinterval);
             barsNew = new Bars(symbol, BarScale.Tick, 1);
             rayclient = new AsynchronousClient(11000);
             q = new Quote();
@@ -75,7 +75,7 @@ namespace OpenWealth.WLProvider
             if (leftIndex < 0)
             {
                 q.TimeStamp = DateTime.Now;
-                if (q.TimeStamp.Second >= 58)
+                if (q.TimeStamp.Second == 59)
                 {
                     //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
                     UpdateMiniBar(q, q.Open, highest, lowest);
@@ -155,10 +155,10 @@ namespace OpenWealth.WLProvider
                 //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
 
                 //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
-                //UpdateMiniBar(q, q.Open, highest, lowest);
-                UpdateQuote(q); // не устанавливает 
+                UpdateMiniBar(q, q.Open, highest, lowest);
+                //UpdateQuote(q); // не устанавливает 
 
-                if (q.TimeStamp.Second >= 58)
+                if (q.TimeStamp.Second == 59)
                 {
                     /*
                     barsNew.Add(q.TimeStamp, q.Open, highest, lowest, q.Price, minSize);
