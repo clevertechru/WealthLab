@@ -30,7 +30,7 @@ namespace OpenWealth.WLProvider
         public override void Initialize(IDataHost dataHost)
         {
             scale = BarScale.Second;
-            barinterval = 60;
+            barinterval = 59;
             base.Initialize(dataHost);
             this._dataStore = new BarDataStore(dataHost, this);
             this.zaglushka = new Zaglushka();
