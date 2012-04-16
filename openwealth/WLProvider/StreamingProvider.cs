@@ -170,7 +170,7 @@ namespace OpenWealth.WLProvider
                 {
                     if (DateTime.Compare(rightnow, date2) <= 0)
                     {
-                        if (rightnow.Month == date2.Minute && rightnow.Hour == date2.Hour)
+                        if (rightnow.Minute == date2.Minute && rightnow.Hour == date2.Hour)
                         {
                             q.TimeStamp = rightnow;
                             q.TimeStamp = q.TimeStamp.AddMinutes(-1);
