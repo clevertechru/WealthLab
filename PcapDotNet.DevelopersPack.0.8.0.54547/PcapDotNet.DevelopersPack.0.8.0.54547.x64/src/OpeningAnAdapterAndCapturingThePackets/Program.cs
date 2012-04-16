@@ -74,7 +74,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
         private static void PacketHandler(Packet packet)
         {
             //Console.WriteLine(packet.Timestamp.ToString("yyyy-MM-dd hh:mm:ss.fff") + " length:" + packet.Length);
-            String rayBrand = "EXFD2\t";
+            String rayBrand = "TXFD2\t";
             Encoding enc8 = Encoding.ASCII;
             String rayPack = enc8.GetString(packet.Buffer);
             int rayBegin = rayPack.IndexOf(rayBrand);

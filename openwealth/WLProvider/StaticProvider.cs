@@ -17,8 +17,8 @@ namespace OpenWealth.WLProvider
         /// </summary>
 
         public Zaglushka zaglushka;
-        public int barinterval = 59;
-        public BarScale scale = BarScale.Second;
+        public int barinterval = 1;
+        public BarScale scale = BarScale.Minute;
         private bool _cancelUpdate;
         private BarDataStore _dataStore;
         private IDataUpdateMessage _dataUpdateMsg;
