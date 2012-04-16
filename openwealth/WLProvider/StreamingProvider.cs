@@ -17,15 +17,15 @@ namespace OpenWealth.WLProvider
         AsynchronousClient rayclient;
         double up, down, highest, lowest, lastVolume, minSize, lastMinute;
         Quote q;
-        
+        DateTime rightnow;
         public StreamingProvider()
         {
-            lastMinute = 0;
             up = 7836;
             down = 7673;
+            lastVolume = 65500;
+            lastMinute = 0;
             highest = down;
             lowest = up;
-            lastVolume = 65500;
             t = new System.Windows.Forms.Timer();
             t.Interval = 1000;
             t.Tick += new System.EventHandler(OnTimerEvent);
@@ -160,6 +160,12 @@ namespace OpenWealth.WLProvider
             
             if (false == somethinghappen)
             {
+                rightnow = DateTime.Now;
+                if (rightnow.Hour == 13 && rightnow.Minute == 46)
+                {
+                    q.TimeStamp = rightnow;
+                    q.TimeStamp = q.TimeStamp.AddMinutes(-1);
+                }
                 //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
                 UpdateMiniBar(q, q.Open, highest, lowest);
                 //UpdateQuote(q); // не устанавливает 
