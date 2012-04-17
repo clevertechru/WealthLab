@@ -20,9 +20,9 @@ namespace OpenWealth.WLProvider
         DateTime rightnow, date1, date2;
         public StreamingProvider()
         {
-            up = 7836;
-            down = 7673;
-            lastVolume = 65500;
+            up = 7843;
+            down = 7580;
+            lastVolume = 108000;
             lastMinute = 44;
             firstOpen = 0;
             highest = down;
@@ -51,7 +51,7 @@ namespace OpenWealth.WLProvider
 
         protected override void Subscribe(string symbol)
         {
-            bars = new Bars(symbol, BarScale.Second, rayProvider.barinterval);
+            bars = new Bars(symbol, rayProvider.scale, rayProvider.barinterval);
             barsNew = new Bars(symbol, BarScale.Tick, 1);
             rayclient = new AsynchronousClient(11000);
             q = new Quote();
@@ -95,7 +95,7 @@ namespace OpenWealth.WLProvider
                     q.TimeStamp = q.TimeStamp.AddMinutes(minutes);
                     q.TimeStamp = q.TimeStamp.AddSeconds(seconds);
 
-                    if (lastMinute != minutes && false == somethinghappen)
+                    if (lastMinute != minutes)
                     {
                         barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, minSize);
                         rayProvider.LoadAndUpdateBars(ref bars, barsNew);
