@@ -249,13 +249,12 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 Console.WriteLine("Theory Basis? " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
                 */
                 
+                // Send test data to the remote device.
+                rayclient.raysend(rayBuilder.ToString()); 
+                rayBuilder.Clear();
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }
-
-            // Send test data to the remote device.
-            rayclient.raysend(rayBuilder.ToString()); 
-            rayBuilder.Clear();
 
         }
     }

@@ -17,19 +17,20 @@ namespace OpenWealth.WLProvider
         AsynchronousClient rayclient;
         double up, down, highest, lowest, lastVolume, minSize, lastMinute, firstOpen;
         Quote q;
-        DateTime rightnow, date1, date2;
+        DateTime rightnow, date844, date845, date1345;
         public StreamingProvider()
         {
             up = 7699;
             down = 7494;
-            lastVolume = 28800;
-            lastMinute = 44;
+            lastVolume = 0;
+            lastMinute = -1;
             firstOpen = 0;
             highest = down;
             lowest = up;
             rightnow = DateTime.Today;
-            date1 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 44, 0);
-            date2 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 13, 45, 59);
+            date844 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 44, 0);
+            date845 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 45, 0);
+            date1345 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 13, 45, 59);
             t = new System.Windows.Forms.Timer();
             t.Interval = 1000;
             t.Tick += new System.EventHandler(OnTimerEvent);
@@ -68,7 +69,7 @@ namespace OpenWealth.WLProvider
         {
             rightnow = DateTime.Now;
 
-            if (DateTime.Compare(rightnow, date1) >= 0)
+            if (DateTime.Compare(rightnow, date844) >= 0)
             {
                 int leftIndex = 0, rightIndex = 0;
                 double hours = 0, minutes = 0, seconds = 0;
@@ -86,6 +87,7 @@ namespace OpenWealth.WLProvider
                     hours = Double.Parse(receivedata.Substring(leftIndex, 2));
                     leftIndex = receivedata.IndexOf("Minute:", leftIndex) + "Minute:".Length;
                     minutes = Double.Parse(receivedata.Substring(leftIndex, 2));
+                    hours = (minutes == 00 ? hours - 1 : hours);
                     minutes = (minutes == 00 ? 59 : minutes - 1);
                     leftIndex = receivedata.IndexOf("Second:", leftIndex) + "Second:".Length;
                     seconds = Double.Parse(receivedata.Substring(leftIndex, 2));
@@ -95,7 +97,7 @@ namespace OpenWealth.WLProvider
                     q.TimeStamp = q.TimeStamp.AddMinutes(minutes);
                     q.TimeStamp = q.TimeStamp.AddSeconds(seconds);
 
-                    if (lastMinute != minutes)
+                    if (lastMinute != minutes && lastMinute >= 0)
                     {
                         barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, minSize);
                         rayProvider.LoadAndUpdateBars(ref bars, barsNew);
@@ -104,61 +106,110 @@ namespace OpenWealth.WLProvider
                         highest = down;
                         lowest = up;
                     }
-
+                    String rayTemp = String.Empty;
                     leftIndex = receivedata.IndexOf("Price:", leftIndex) + "Price:".Length;
                     rightIndex = receivedata.IndexOf("#B", leftIndex);
-                    String rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
-                    if (false == String.IsNullOrEmpty(rayTemp))
+                    int indexlen = rightIndex - leftIndex;
+                    if (indexlen > 0 && indexlen < 10)
                     {
-                        q.Price = Double.Parse(rayTemp);
-                        q.PreviousClose = q.Open;
-                        q.Open = q.Price;
-                        if (0 == firstOpen)
+                        rayTemp = receivedata.Substring(leftIndex, indexlen);
+                        if (false == String.IsNullOrEmpty(rayTemp))
                         {
-                            firstOpen = q.Open;
+                            q.Price = Double.Parse(rayTemp);
+                            q.PreviousClose = q.Open;
+                            q.Open = q.Price;
+                            if (0 == firstOpen)
+                            {
+                                firstOpen = q.Open;
+                            }
                         }
+                        leftIndex = rightIndex + 1;
                     }
-                    leftIndex = rightIndex + 1;
-
+                    else
+                    {
+                        leftIndex = receivedata.IndexOf("Hour:", leftIndex + 1);
+                        continue;
+                    }
                     leftIndex = receivedata.IndexOf("Bid:", leftIndex) + "Bid:".Length;
                     rightIndex = receivedata.IndexOf("$A", leftIndex);
-                    rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
-                    if (false == String.IsNullOrEmpty(rayTemp))
+                    indexlen = rightIndex - leftIndex;
+                    if (indexlen > 0 && indexlen < 10)
                     {
-                        q.Bid = Double.Parse(rayTemp);
+                        rayTemp = receivedata.Substring(leftIndex, indexlen);
+                        if (false == String.IsNullOrEmpty(rayTemp))
+                        {
+                            q.Bid = Double.Parse(rayTemp);
+                        }
+                        leftIndex = rightIndex + 1;
                     }
-                    leftIndex = rightIndex + 1;
-
+                    else
+                    {
+                        leftIndex = receivedata.IndexOf("Hour:", leftIndex + 1);
+                        continue;
+                    }
+                    
                     leftIndex = receivedata.IndexOf("Ask:", leftIndex) + "Ask:".Length;
                     rightIndex = receivedata.IndexOf("%V", leftIndex);
-                    rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
-                    if (false == String.IsNullOrEmpty(rayTemp))
+                    indexlen = rightIndex - leftIndex;
+                    if (indexlen > 0 && indexlen < 10)
                     {
-                        q.Ask = Double.Parse(rayTemp);
+                        rayTemp = receivedata.Substring(leftIndex, indexlen);
+                        if (false == String.IsNullOrEmpty(rayTemp))
+                        {
+                            q.Ask = Double.Parse(rayTemp);
+                        }
+                        leftIndex = rightIndex + 1;
                     }
-                    leftIndex = rightIndex + 1;
-
+                    else
+                    {
+                        leftIndex = receivedata.IndexOf("Hour:", leftIndex + 1);
+                        continue;
+                    }
+                    
                     q.Symbol = symbol;
 
                     leftIndex = receivedata.IndexOf("Volume:", leftIndex) + "Volume:".Length;
                     rightIndex = receivedata.IndexOf("(", leftIndex);
-                    rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
-                    if (false == String.IsNullOrEmpty(rayTemp))
-                    {
-                        double nowVolume = Double.Parse(rayTemp);
-                        q.Size = nowVolume - lastVolume;
-                        minSize += q.Size;
-                        lastVolume = nowVolume;
-                    }
-                    leftIndex = rightIndex + 1;
 
+                    if (rightIndex > 0)
+                    {
+                        rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
+                        if (false == String.IsNullOrEmpty(rayTemp))
+                        {
+                            double nowVolume = Double.Parse(rayTemp);
+                            if (lastVolume == 0)
+                            {
+                                if (DateTime.Compare(q.TimeStamp, date845) == 0)
+                                {
+                                    q.Size = nowVolume;
+                                }
+                                else
+                                {
+                                    q.Size = 0;
+                                }
+                            }
+                            else
+                                q.Size = nowVolume - lastVolume;
+                            minSize += q.Size;
+                            lastVolume = nowVolume;
+                        }
+                        leftIndex = rightIndex + 1;
+                    }
+                    else
+                    {
+                        leftIndex = receivedata.IndexOf("Hour:", leftIndex + 1);
+                        continue;
+                    }
+                    
                     highest = Math.Max(highest, q.Price);
                     lowest = Math.Min(lowest, q.Price);
                     //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
-
-                    //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
-                    UpdateMiniBar(q, q.Open, highest, lowest);
-                    //UpdateQuote(q); // не устанавливает 
+                    if (q.Size > 0)
+                    {
+                        //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
+                        UpdateMiniBar(q, q.Open, highest, lowest);
+                        //UpdateQuote(q); // не устанавливает 
+                    }
                     somethinghappen = true;
 
                     lastMinute = minutes;
@@ -168,16 +219,20 @@ namespace OpenWealth.WLProvider
 
                 if (false == somethinghappen)
                 {
-                    if (DateTime.Compare(rightnow, date2) <= 0)
+                    if (DateTime.Compare(rightnow, date1345) <= 0)
                     {
-                        if (rightnow.Minute == date2.Minute && rightnow.Hour == date2.Hour)
+                        if (rightnow.Minute == date1345.Minute && rightnow.Hour == date1345.Hour)
                         {
                             q.TimeStamp = rightnow;
                             q.TimeStamp = q.TimeStamp.AddMinutes(-1);
                         }
-                        //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
-                        UpdateMiniBar(q, q.Open, highest, lowest);
-                        //UpdateQuote(q); // не устанавливает
+
+                        if (q.Size > 0)
+                        {
+                            //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
+                            UpdateMiniBar(q, q.Open, highest, lowest);
+                            //UpdateQuote(q); // не устанавливает
+                        }
                     }
                 }
 
