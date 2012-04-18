@@ -20,15 +20,15 @@ namespace OpenWealth.WLProvider
         DateTime rightnow, date1, date2;
         public StreamingProvider()
         {
-            up = 7843;
-            down = 7580;
-            lastVolume = 108000;
+            up = 7699;
+            down = 7494;
+            lastVolume = 28800;
             lastMinute = 44;
             firstOpen = 0;
             highest = down;
             lowest = up;
             rightnow = DateTime.Today;
-            date1 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 45, 0);
+            date1 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 44, 0);
             date2 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 13, 45, 59);
             t = new System.Windows.Forms.Timer();
             t.Interval = 1000;

@@ -9,7 +9,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
     {
         static SynchronousSocketListener rayclient;
         static StringBuilder rayBuilder;
-        static String lastminute = "0", lastsecond = "0";
+        static String lastminute = "0";
         static void Main(string[] args)
         {
             // Send anonymous statistics about the usage of Pcap.Net
@@ -89,12 +89,6 @@ namespace OpeningAnAdapterAndCapturingThePackets
                     rightIndex = rayPack.IndexOf('\t', leftIndex);
                     if (rightIndex > 0)
                     {
-                        String second = rayPack.Substring(leftIndex + 4, 2);
-                        if (true == lastsecond.Equals(second))
-                        {
-                            rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
-                            continue;
-                        }
                         rayBuilder.Append("Hour:").Append(rayPack.Substring(leftIndex, 2));
                         String minute = rayPack.Substring(leftIndex + 2, 2);
                         rayBuilder.Append("Minute:").Append(minute);
@@ -103,8 +97,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
                             Console.WriteLine("Minute:{0}", minute);
                             lastminute = minute;
                         }
-                        rayBuilder.Append("Second:").Append(second);
-                        lastsecond = second;
+                        rayBuilder.Append("Second:").Append(rayPack.Substring(leftIndex + 4, 2));
                     }
                     else
                     {
@@ -256,13 +249,12 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 Console.WriteLine("Theory Basis? " + rayPack.Substring(leftIndex, rightIndex - leftIndex));
                 */
                 
-                // Send test data to the remote device.
-                rayclient.raysend(rayBuilder.ToString());
-                
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }
 
+            // Send test data to the remote device.
+            rayclient.raysend(rayBuilder.ToString()); 
             rayBuilder.Clear();
 
         }
