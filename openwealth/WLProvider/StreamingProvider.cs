@@ -20,8 +20,8 @@ namespace OpenWealth.WLProvider
         DateTime rightnow, date844, date845, date1345;
         public StreamingProvider()
         {
-            up = 7699;
-            down = 7494;
+            up = 8128;
+            down = 7066;
             lastVolume = 0;
             lastMinute = -1;
             firstOpen = 0;
