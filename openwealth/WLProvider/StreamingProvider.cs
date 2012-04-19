@@ -244,7 +244,7 @@ namespace OpenWealth.WLProvider
                 //q.TimeStamp = q.TimeStamp.AddMinutes(-1);
                 q.Size = 0;
                 q.Open = q.Price = q.Ask = q.Bid = (highest + lowest) / 2;
-                UpdateMiniBar(q, q.Open, highest, lowest);
+                UpdateMiniBar(q, q.Open, q.Open, q.Open);
             }
         }
 
