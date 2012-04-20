@@ -78,10 +78,10 @@ namespace OpeningAnAdapterAndCapturingThePackets
             Encoding enc8 = Encoding.ASCII;
             String rayPack = enc8.GetString(packet.Buffer);
             int rayBegin = rayPack.IndexOf(rayBrand);
+            String endstr = "(";
             while (rayBegin >= 0) //while
             {
-                String endstr = "(";
-
+                
                 int leftIndex = rayBegin + rayBrand.Length;
                 int rightIndex = 0;
                 if (leftIndex < rayPack.Length)
