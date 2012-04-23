@@ -17,7 +17,7 @@ namespace OpenWealth.WLProvider
         AsynchronousClient rayclient;
         double up, down, highest, lowest, lastVolume, minSize, firstOpen;
         Quote q;
-        DateTime rightnow, date844, date845, date1345, lastMinute;
+        DateTime rightnow, date844, date845, date1346, lastMinute;
         public StreamingProvider()
         {
             up = 8128;
@@ -30,7 +30,7 @@ namespace OpenWealth.WLProvider
             date844 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 44, 0);
             date845 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 45, 0);
             lastMinute = rightnow;
-            date1345 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 13, 45, 59);
+            date1346 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 13, 46, 59);
             t = new System.Windows.Forms.Timer();
             t.Interval = 1000;
             t.Tick += new System.EventHandler(OnTimerEvent);
@@ -98,7 +98,7 @@ namespace OpenWealth.WLProvider
                     q.TimeStamp = q.TimeStamp.AddMinutes(minutes);
                     q.TimeStamp = q.TimeStamp.AddSeconds(seconds);
                     bool updatelastmin = (q.TimeStamp.Minute != lastMinute.Minute && DateTime.Compare(q.TimeStamp, lastMinute) > 0);
-                    if (updatelastmin)
+                    if (updatelastmin && highest != up && lowest != down)
                     {
                         barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, minSize);
                         rayProvider.LoadAndUpdateBars(ref bars, barsNew);
@@ -221,14 +221,15 @@ namespace OpenWealth.WLProvider
 
                 if (false == somethinghappen)
                 {
-                    if (DateTime.Compare(rightnow, date1345) <= 0)
+                    if (DateTime.Compare(rightnow, date1346) <= 0)
                     {
-                        if (rightnow.Minute == date1345.Minute && rightnow.Hour == date1345.Hour)
+                        if (rightnow.Minute == date1346.Minute && rightnow.Hour == date1346.Hour)
                         {
                             q.TimeStamp = rightnow;
-                            //q.TimeStamp = q.TimeStamp.AddMinutes(-1);
+                            q.TimeStamp = q.TimeStamp.AddMinutes(-1);
                             q.Size = 0;
-                            q.Open = q.Price = q.Ask = q.Bid = (highest + lowest) / 2;
+                            double interruptFirst = (highest + lowest) / 2;
+                            q.Open = q.Price = q.Ask = q.Bid = interruptFirst;
                             UpdateMiniBar(q, q.Open, highest, lowest);
                         }
                         else if (q.Size > 0)
@@ -247,7 +248,8 @@ namespace OpenWealth.WLProvider
                 q.TimeStamp = rightnow;
                 //q.TimeStamp = q.TimeStamp.AddMinutes(-1);
                 q.Size = 0;
-                q.Open = q.Price = q.Ask = q.Bid = (highest + lowest) / 2;
+                double interruptFirst = (highest + lowest) / 2;
+                q.Open = q.Price = q.Ask = q.Bid = interruptFirst;
                 UpdateMiniBar(q, q.Open, q.Open, q.Open);
             }
         }
