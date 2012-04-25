@@ -607,7 +607,7 @@ namespace Strategies.ActiveTrader
             get { return typeof(ATMDec2007); }
         }
     }
-
+    /*
     public class ATMOct2007 : WealthScript
     {
         protected override void Execute()
@@ -706,5 +706,5 @@ namespace Strategies.ActiveTrader
             get { return typeof(ATMOct2007); }
         }
     }
-
+    */
 }

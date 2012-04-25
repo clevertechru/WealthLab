@@ -888,7 +888,7 @@ namespace Strategies.ActiveTrader
             get { return typeof(ATMMay2010); }
         }
     }
-
+    /*
     public class ATMJun2010 : WealthScript
     {
         private StrategyParameter longChannelPer;
@@ -1002,7 +1002,7 @@ namespace Strategies.ActiveTrader
             get { return typeof(ATMJun2010); }
         }
     }
-
+    */
     public class ATMJul2010 : WealthScript
     {
         protected override void Execute()

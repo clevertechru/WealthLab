@@ -6,3 +6,11 @@ C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader
 C:\Users\Ray\Downloads\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\Strategies.ActiveTrader.pdb
 C:\Program Files (x86)\Fidelity Investments\Wealth-Lab Pro 6\Strategies.ActiveTrader.dll
 C:\Program Files (x86)\Fidelity Investments\Wealth-Lab Pro 6\Strategies.ActiveTrader.pdb
+C:\Users\Ray\Documents\Visual Studio 2010\Projects\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ray\Documents\Visual Studio 2010\Projects\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\Strategies.ActiveTrader.Properties.Resources.resources
+C:\Users\Ray\Documents\Visual Studio 2010\Projects\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\ResGen.read.1.tlog
+C:\Users\Ray\Documents\Visual Studio 2010\Projects\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\ResGen.write.1.tlog
+C:\Program Files (x86)\Fidelity Investments\Wealth-Lab Pro 5\Strategies.ActiveTrader.dll
+C:\Program Files (x86)\Fidelity Investments\Wealth-Lab Pro 5\Strategies.ActiveTrader.pdb
+C:\Users\Ray\Documents\Visual Studio 2010\Projects\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\Strategies.ActiveTrader.dll
+C:\Users\Ray\Documents\Visual Studio 2010\Projects\WealthLab.Strategies.ActiveTrader\Strategies.ActiveTrader\obj\Debug\Strategies.ActiveTrader.pdb

@@ -41,10 +41,12 @@ namespace OpenWealth.WLProvider
         {
             t.Enabled = true;
         }
+        /*
         public override void DisconnectStreaming(IConnectionStatus connStatus)
         {
             t.Enabled = false;
         }
+         */
         public override StaticDataProvider GetStaticProvider()
         {
             rayProvider = new StaticProvider();
@@ -99,7 +101,7 @@ namespace OpenWealth.WLProvider
                     q.TimeStamp = q.TimeStamp.AddMinutes(minutes);
                     q.TimeStamp = q.TimeStamp.AddSeconds(seconds);
                     bool updatelastmin = (q.TimeStamp.Minute != lastMinute.Minute && DateTime.Compare(q.TimeStamp, lastMinute) > 0);
-                    if (updatelastmin && (highest - lowest) < maxrange )
+                    if (updatelastmin && highest > lowest )
                     {
                         barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, minSize);
                         rayProvider.LoadAndUpdateBars(ref bars, barsNew);
@@ -261,7 +263,7 @@ namespace OpenWealth.WLProvider
         public override string FriendlyName { get { return "OpenWealth"; } }
         public override System.Drawing.Bitmap Glyph { get { return Properties.Resources.Image1; } }
         public override bool IsConnected { get { return t.Enabled; } }
-        public override bool StreamingAtDisconnect { get { return !t.Enabled; } }
+        //public override bool StreamingAtDisconnect { get { return !t.Enabled; } }
         public override string URL { get { return "http://openwealth.ru/"; } }
 
         #endregion Descriptive
