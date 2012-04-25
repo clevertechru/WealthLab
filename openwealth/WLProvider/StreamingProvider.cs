@@ -15,17 +15,18 @@ namespace OpenWealth.WLProvider
         Bars bars;
         Bars barsNew; 
         AsynchronousClient rayclient;
-        double up, down, highest, lowest, lastVolume, minSize, firstOpen;
+        double up, down, highest, lowest, lastVolume, minSize, firstOpen, maxrange;
         Quote q;
         DateTime rightnow, date844, date845, date1346, lastMinute;
         public StreamingProvider()
         {
-            up = 8128;
-            down = 7066;
+            up = 8012;
+            down = 6924;
             lastVolume = 0;
             firstOpen = 0;
             highest = down;
             lowest = up;
+            maxrange = (up - down) / 2;
             rightnow = DateTime.Today;
             date844 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 44, 0);
             date845 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 45, 0);
@@ -98,7 +99,7 @@ namespace OpenWealth.WLProvider
                     q.TimeStamp = q.TimeStamp.AddMinutes(minutes);
                     q.TimeStamp = q.TimeStamp.AddSeconds(seconds);
                     bool updatelastmin = (q.TimeStamp.Minute != lastMinute.Minute && DateTime.Compare(q.TimeStamp, lastMinute) > 0);
-                    if (updatelastmin && highest != up && lowest != down)
+                    if (updatelastmin && (highest - lowest) < maxrange )
                     {
                         barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, minSize);
                         rayProvider.LoadAndUpdateBars(ref bars, barsNew);
