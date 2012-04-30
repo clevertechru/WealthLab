@@ -31,7 +31,7 @@ namespace OpenWealth.WLProvider
             date844 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 44, 0);
             date845 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 8, 45, 0);
             lastMinute = rightnow;
-            date1346 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 13, 46, 59);
+            date1346 = new DateTime(rightnow.Year, rightnow.Month, rightnow.Day, 13, 46, 00);
             t = new System.Windows.Forms.Timer();
             t.Interval = 1000;
             t.Tick += new System.EventHandler(OnTimerEvent);
@@ -228,6 +228,8 @@ namespace OpenWealth.WLProvider
                     {
                         if (rightnow.Minute == date1346.Minute && rightnow.Hour == date1346.Hour)
                         {
+                            barsNew.Add(q.TimeStamp, firstOpen, highest, lowest, q.Price, minSize);
+                            rayProvider.LoadAndUpdateBars(ref bars, barsNew);
                             q.TimeStamp = rightnow;
                             q.TimeStamp = q.TimeStamp.AddMinutes(-1);
                             q.Size = 0;

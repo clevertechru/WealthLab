@@ -9,7 +9,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
     {
         static SynchronousSocketListener rayclient;
         static StringBuilder rayBuilder;
-        static String lastminute = "0", lastsecond = "-1";
+        static String lastminute = "0", lastsecond = "0";
         static void Main(string[] args)
         {
             // Send anonymous statistics about the usage of Pcap.Net
@@ -78,10 +78,9 @@ namespace OpeningAnAdapterAndCapturingThePackets
             Encoding enc8 = Encoding.ASCII;
             String rayPack = enc8.GetString(packet.Buffer);
             int rayBegin = rayPack.IndexOf(rayBrand);
-            String endstr = "(";
+            String endstr = "(", second = "0";
             while (rayBegin >= 0) //while
             {
-                rayBuilder.Clear();
                 int leftIndex = rayBegin + rayBrand.Length;
                 int rightIndex = 0;
                 if (leftIndex < rayPack.Length)
@@ -97,15 +96,8 @@ namespace OpeningAnAdapterAndCapturingThePackets
                             Console.WriteLine("Minute:{0}", minute);
                             lastminute = minute;
                         }
-                        String second = rayPack.Substring(leftIndex + 4, 2);
-                        rayBuilder.Append("Second:").Append(second);
-                        if (true == second.Equals(lastsecond))
-                        {
-                            rayBegin = rayPack.IndexOf(rayBrand, leftIndex + 1);
-                            continue;
-                        }
-                        else
-                            lastsecond = second;
+                        second = rayPack.Substring(leftIndex + 4, 2);
+                        rayBuilder.Append("Second:").Append(second);                        
                     }
                     else
                     {
@@ -258,11 +250,17 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 */
                 
                 // Send test data to the remote device.
-                rayclient.raysend(rayBuilder.ToString()); 
+                if (false == second.Equals(lastsecond))
+                {
+                    rayclient.raysend(rayBuilder.ToString());
+                    rayBuilder.Clear();
+                    lastsecond = second;
+                }
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }
-
+            rayclient.raysend(rayBuilder.ToString());
+            rayBuilder.Clear();
         }
     }
 }
