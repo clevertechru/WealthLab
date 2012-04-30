@@ -9,7 +9,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
     {
         static SynchronousSocketListener rayclient;
         static StringBuilder rayBuilder;
-        static String lastminute = "0";
+        static String lastminute = "0", lastsecond = "-1";
         static void Main(string[] args)
         {
             // Send anonymous statistics about the usage of Pcap.Net
@@ -81,7 +81,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
             String endstr = "(";
             while (rayBegin >= 0) //while
             {
-                
+                rayBuilder.Clear();
                 int leftIndex = rayBegin + rayBrand.Length;
                 int rightIndex = 0;
                 if (leftIndex < rayPack.Length)
@@ -97,7 +97,15 @@ namespace OpeningAnAdapterAndCapturingThePackets
                             Console.WriteLine("Minute:{0}", minute);
                             lastminute = minute;
                         }
-                        rayBuilder.Append("Second:").Append(rayPack.Substring(leftIndex + 4, 2));
+                        String second = rayPack.Substring(leftIndex + 4, 2);
+                        rayBuilder.Append("Second:").Append(second);
+                        if (true == second.Equals(lastsecond))
+                        {
+                            rayBegin = rayPack.IndexOf(rayBrand, leftIndex + 1);
+                            continue;
+                        }
+                        else
+                            lastsecond = second;
                     }
                     else
                     {
@@ -251,7 +259,6 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 
                 // Send test data to the remote device.
                 rayclient.raysend(rayBuilder.ToString()); 
-                rayBuilder.Clear();
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }
