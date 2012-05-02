@@ -9,7 +9,7 @@ namespace OpeningAnAdapterAndCapturingThePackets
     {
         static SynchronousSocketListener rayclient;
         static StringBuilder rayBuilder;
-        static String lastminute = "0", lastsecond = "0";
+        static String lastminute = "0";
         static void Main(string[] args)
         {
             // Send anonymous statistics about the usage of Pcap.Net
@@ -88,6 +88,12 @@ namespace OpeningAnAdapterAndCapturingThePackets
                     rightIndex = rayPack.IndexOf('\t', leftIndex);
                     if (rightIndex > 0)
                     {
+                        second = rayPack.Substring(leftIndex + 4, 2);
+                        if (Int16.Parse(second.Substring(1, 1)) % 3 != 0)
+                        {
+                            rayBegin = rayPack.IndexOf(rayBrand, leftIndex + 1);
+                            continue;
+                        }
                         rayBuilder.Append("Hour:").Append(rayPack.Substring(leftIndex, 2));
                         String minute = rayPack.Substring(leftIndex + 2, 2);
                         rayBuilder.Append("Minute:").Append(minute);
@@ -96,7 +102,6 @@ namespace OpeningAnAdapterAndCapturingThePackets
                             Console.WriteLine("Minute:{0}", minute);
                             lastminute = minute;
                         }
-                        second = rayPack.Substring(leftIndex + 4, 2);
                         rayBuilder.Append("Second:").Append(second);                        
                     }
                     else
@@ -250,17 +255,13 @@ namespace OpeningAnAdapterAndCapturingThePackets
                 */
                 
                 // Send test data to the remote device.
-                if (false == second.Equals(lastsecond))
-                {
-                    rayclient.raysend(rayBuilder.ToString());
-                    rayBuilder.Clear();
-                    lastsecond = second;
-                }
+                rayclient.raysend(rayBuilder.ToString());
+                rayBuilder.Clear();
+                
                 rayBegin = rayPack.IndexOf(rayBrand, rightIndex + 1);
 
             }
-            rayclient.raysend(rayBuilder.ToString());
-            rayBuilder.Clear();
+            
         }
     }
 }
