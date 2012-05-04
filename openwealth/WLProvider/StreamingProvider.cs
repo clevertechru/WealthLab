@@ -80,7 +80,7 @@ namespace OpenWealth.WLProvider
                 bool somethinghappen = false;
                 // Receive the response from the remote device.
                 String receivedata = rayclient.rayreceive();
-                q.Size = 0;
+                //q.Size = 0;
                 q.Open = q.Price;
                 leftIndex = receivedata.IndexOf("Hour:", leftIndex);
 
@@ -181,7 +181,7 @@ namespace OpenWealth.WLProvider
                             double nowVolume = Double.Parse(rayTemp);
                             if (lastVolume == 0)
                             {
-                                if (DateTime.Compare(q.TimeStamp, date845) == 0)
+                                if (DateTime.Compare(q.TimeStamp, date845) >= 0)
                                 {
                                     q.Size = nowVolume;
                                 }
@@ -193,7 +193,6 @@ namespace OpenWealth.WLProvider
                             else
                                 q.Size = nowVolume - lastVolume;
                             minSize += q.Size;
-                            lastVolume = nowVolume;
                         }
                         leftIndex = rightIndex + 1;
                     }
@@ -208,9 +207,14 @@ namespace OpenWealth.WLProvider
                     //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
                     if (q.Size > 0)
                     {
-                        //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
-                        UpdateMiniBar(q, q.Open, highest, lowest);
-                        //UpdateQuote(q); // не устанавливает 
+                        seconds %= 10;
+                        if (0 == seconds || 4 == seconds || 9 == seconds)
+                        {
+                            //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
+                            UpdateMiniBar(q, q.Open, highest, lowest);
+                            //UpdateQuote(q); // не устанавливает
+                        }
+                        
                     }
                     somethinghappen = true;
 
@@ -242,6 +246,7 @@ namespace OpenWealth.WLProvider
                             //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
                             UpdateMiniBar(q, q.Open, highest, lowest);
                             //UpdateQuote(q); // не устанавливает
+                            lastVolume = nowVolume;
                         }
                     }
                 }
