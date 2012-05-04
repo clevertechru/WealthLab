@@ -18,8 +18,10 @@ namespace OpenWealth.WLProvider
         double up, down, highest, lowest, lastVolume, minSize, firstOpen, maxrange;
         Quote q;
         DateTime rightnow, date844, date845, date1346, lastMinute;
+        int tcount;
         public StreamingProvider()
         {
+            tcount = 0;
             up = 8012;
             down = 6924;
             lastVolume = 0;
@@ -72,15 +74,18 @@ namespace OpenWealth.WLProvider
         private void OnTimerEvent(object sender, EventArgs e)
         {
             rightnow = DateTime.Now;
-
+            if (2 == tcount)
+            {
+                tcount = 0;
+            }
             if (DateTime.Compare(rightnow, date845) >= 0)
             {
                 int leftIndex = 0, rightIndex = 0;
-                double hours = 0, minutes = 0, seconds = 0;
+                double hours = 0, minutes = 0, seconds = 0, nowVolume = 0;
                 bool somethinghappen = false;
                 // Receive the response from the remote device.
                 String receivedata = rayclient.rayreceive();
-                //q.Size = 0;
+                q.Size = 0;
                 q.Open = q.Price;
                 leftIndex = receivedata.IndexOf("Hour:", leftIndex);
 
@@ -178,21 +183,20 @@ namespace OpenWealth.WLProvider
                         rayTemp = receivedata.Substring(leftIndex, rightIndex - leftIndex);
                         if (false == String.IsNullOrEmpty(rayTemp))
                         {
-                            double nowVolume = Double.Parse(rayTemp);
+                            nowVolume = Double.Parse(rayTemp);
                             if (lastVolume == 0)
                             {
-                                if (DateTime.Compare(q.TimeStamp, date845) >= 0)
+                                if (DateTime.Compare(q.TimeStamp, date845) == 0)
                                 {
                                     q.Size = nowVolume;
                                 }
                                 else
                                 {
-                                    q.Size = 0;
+                                    q.Size = 1;
                                 }
                             }
                             else
                                 q.Size = nowVolume - lastVolume;
-                            minSize += q.Size;
                         }
                         leftIndex = rightIndex + 1;
                     }
@@ -207,14 +211,14 @@ namespace OpenWealth.WLProvider
                     //Hearbeat(q.TimeStamp); // Зачем нужен данный метод?
                     if (q.Size > 0)
                     {
-                        seconds %= 10;
-                        if (0 == seconds || 4 == seconds || 9 == seconds)
+                        if (0 == tcount)
                         {
                             //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
                             UpdateMiniBar(q, q.Open, highest, lowest);
                             //UpdateQuote(q); // не устанавливает
+                            minSize += q.Size;
+                            lastVolume = nowVolume;
                         }
-                        
                     }
                     somethinghappen = true;
 
@@ -246,7 +250,6 @@ namespace OpenWealth.WLProvider
                             //UpdateStreamingBar(symbol, 0, q.Open, highest, lowest, q.Open, q.Size, q.TimeStamp, "Ray");
                             UpdateMiniBar(q, q.Open, highest, lowest);
                             //UpdateQuote(q); // не устанавливает
-                            lastVolume = nowVolume;
                         }
                     }
                 }
@@ -262,6 +265,7 @@ namespace OpenWealth.WLProvider
                 q.Open = q.Price = q.Ask = q.Bid = interruptFirst;
                 UpdateMiniBar(q, q.Open, q.Open, q.Open);
             }
+            tcount++;
         }
 
         #region Descriptive
